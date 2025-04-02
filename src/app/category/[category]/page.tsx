@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
+export default async function CategoryPage({ params }: Readonly<{ params: { category: string } }>) {
   const listings = await getListingsByCategory(params.category)
 
   return (
@@ -43,7 +43,7 @@ export default async function CategoryPage({ params }: { params: { category: str
 
         {listings.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {listings.map((item) => (
+            {listings.map((item: any) => (
               <ListingCard key={item._id} listing={item} />
             ))}
           </div>

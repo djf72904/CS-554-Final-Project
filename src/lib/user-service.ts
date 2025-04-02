@@ -8,7 +8,6 @@ export type UserProfile = Omit<IUser, "_id" | "__v">
 export async function createUserProfile(user: any): Promise<any> {
   await dbConnect()
 
-  // Check if user already exists
   let userProfile = await User.findOne({ uid: user.uid })
 
   if (!userProfile) {
@@ -28,7 +27,6 @@ export async function createUserProfile(user: any): Promise<any> {
     userProfile = await newUser.save()
   }
 
-  // Explicitly convert to a plain object and remove Mongoose-specific fields
   return {
     uid: userProfile.uid,
     displayName: userProfile.displayName,

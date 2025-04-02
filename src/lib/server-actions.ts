@@ -7,7 +7,6 @@ import Transaction from "@/models/Transaction"
 import mongoose from "mongoose"
 import { revalidatePath } from "next/cache"
 
-// Listing actions
 export async function getListings(limit = 12) {
   await dbConnect()
 
@@ -68,7 +67,6 @@ export async function searchListings(query: string, limit = 20) {
 
 }
 
-// User actions
 export async function getUserById(userId: string) {
   await dbConnect()
 
@@ -84,7 +82,6 @@ export async function getListingsByUserId(userId: string) {
   return JSON.parse(JSON.stringify(listings))
 }
 
-// Transaction actions
 export async function getTransactionsByUserId(userId: string) {
   await dbConnect()
 
@@ -98,7 +95,6 @@ export async function getTransactionsByUserId(userId: string) {
   return JSON.parse(JSON.stringify(transactions))
 }
 
-// Mutation actions
 export async function createListingAction(data: any, userId: string) {
   await dbConnect()
 
@@ -118,7 +114,6 @@ export async function createListingAction(data: any, userId: string) {
 export async function updateListingAction(id: string, data: any, userId: string) {
   await dbConnect()
 
-  // Check if listing exists and belongs to user
   const listing = await Listing.findById(id)
 
   if (!listing) {
@@ -149,7 +144,6 @@ export async function updateListingAction(id: string, data: any, userId: string)
 export async function deleteListingAction(id: string, userId: string) {
   await dbConnect()
 
-  // Check if listing exists and belongs to user
   const listing = await Listing.findById(id)
 
   if (!listing) {

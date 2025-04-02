@@ -1,5 +1,4 @@
 import Image from "next/image"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Share2, Heart } from "lucide-react"
 
@@ -8,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getListingById, getUserById } from "@/lib/server-actions"
 import PurchaseOptions from "./purchase-options"
 
-export default async function ItemPage({ params }: { params: { id: string } }) {
+export default async function ItemPage({ params }: Readonly<{ params: { id: string } }>) {
   const item = await getListingById(params.id)
 
   if (!item) {
@@ -50,7 +49,6 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
                   />
                 </div>
               ))}
-              {/* Fill in with placeholder images if less than 4 additional images */}
               {Array.from({ length: Math.max(0, 2 - (item.images?.slice(1).length || 0)) }).map((_, index) => (
                 <div key={`placeholder-${index}`} className="aspect-square relative rounded-lg overflow-hidden">
                   <Image

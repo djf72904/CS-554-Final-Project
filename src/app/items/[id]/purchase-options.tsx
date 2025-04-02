@@ -17,7 +17,7 @@ interface PurchaseOptionsProps {
   seller: any
 }
 
-export default function PurchaseOptions({ item, seller }: PurchaseOptionsProps) {
+export default function PurchaseOptions({ item }: Readonly<PurchaseOptionsProps>) {
   const router = useRouter()
   const { user, userProfile } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
@@ -31,11 +31,8 @@ export default function PurchaseOptions({ item, seller }: PurchaseOptionsProps) 
     setIsLoading(true)
 
     try {
-      // Here you would implement the purchase logic
-      // For now, we'll just simulate a delay
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      // Redirect to a success page or show a success message
       alert(`Purchase with ${paymentMethod} initiated! This would connect to a real payment system in production.`)
     } catch (error) {
       console.error("Error making purchase:", error)

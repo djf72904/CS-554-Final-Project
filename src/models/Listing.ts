@@ -35,10 +35,8 @@ const ListingSchema: Schema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
-// Add text index for search
 ListingSchema.index({ title: "text", description: "text" })
 
-// Update the updatedAt field on save
 ListingSchema.pre("save", function (next) {
   this.updatedAt = new Date()
   next()

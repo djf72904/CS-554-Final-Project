@@ -80,7 +80,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(user)
 
       if (user) {
-        // Check if user has a .edu email
         if (user.email) {
           searchColleges.byDomain(user.email.split('@')[1]).then((res) => {
             setSchool(res[0].name)
@@ -89,7 +88,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setSchool('')
         }
 
-        // Get or create user profile in MongoDB
         try {
           await createUserProfile(user)
           const profile = await getUserProfile(user.uid)
@@ -111,19 +109,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signInWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider()
-      // Optionally force account selection each time
       provider.setCustomParameters({ prompt: "select_account" })
 
       const result = await signInWithPopup(auth, provider)
 
-      // Check if the email is a .edu email
       if (result.user.email?.endsWith(".edu")) {
         await createUserProfile(result.user)
         const profile = await getUserProfile(result.user.uid)
         setUserProfile(profile)
         router.push("/")
       } else {
-        // If not a .edu email, sign out and show error
         await firebaseSignOut(auth)
         alert("Please sign in with a .edu email address")
         setSchool('')

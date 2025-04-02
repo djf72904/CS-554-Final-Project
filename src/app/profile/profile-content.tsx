@@ -19,7 +19,6 @@ export default function ProfileContent() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log("user", user)
     async function fetchListings() {
       if (user) {
         try {
@@ -42,11 +41,10 @@ export default function ProfileContent() {
 
   return (
     <div className="flex flex-col md:flex-row gap-8">
-      {/* User Info Card */}
       <Card className="flex-1">
         <CardHeader className="flex flex-row items-center gap-4">
           <Avatar className="h-20 w-20">
-            <AvatarImage src={user.photoURL || ""} alt={user.displayName || "User"} />
+            <AvatarImage src={user.photoURL ?? ""} alt={user.displayName ?? "User"} />
             <AvatarFallback>{user.displayName ? user.displayName.charAt(0).toUpperCase() : "U"}</AvatarFallback>
           </Avatar>
           <div>
@@ -58,7 +56,7 @@ export default function ProfileContent() {
           <div className="space-y-4">
             <div>
               <p className="text-sm font-medium">School</p>
-              <p>{userProfile.school || "Not specified"}</p>
+              <p>{userProfile.school ?? "Not specified"}</p>
             </div>
             <div>
               <p className="text-sm font-medium">Member Since</p>
@@ -73,9 +71,7 @@ export default function ProfileContent() {
         </CardFooter>
       </Card>
 
-      {/* Stats and Listings */}
       <div className="flex-[2]">
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -109,7 +105,6 @@ export default function ProfileContent() {
           </Card>
         </div>
 
-        {/* Listings Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="listings">My Listings</TabsTrigger>

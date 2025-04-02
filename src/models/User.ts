@@ -26,7 +26,6 @@ const UserSchema: Schema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
-// Update the updatedAt field on save
 UserSchema.pre("save", function (next) {
   this.updatedAt = new Date()
   next()

@@ -5,7 +5,6 @@ var admin = require("firebase-admin");
 
 
 
-// Initialize Firebase Admin
 const apps = getApps()
 const app = !apps.length
   ? initializeApp({

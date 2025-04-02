@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Verify Firebase token
     const decodedToken = await auth.verifyIdToken(token)
     const userId = decodedToken.uid
 
@@ -38,13 +37,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Verify Firebase token
     const decodedToken = await auth.verifyIdToken(token)
 
-    // Get user data from request body
     const userData = await request.json()
 
-    // Create user profile
     const userProfile = await createUserProfile({
       uid: decodedToken.uid,
       displayName: userData.displayName,
@@ -68,7 +64,6 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Verify Firebase token
     const decodedToken = await auth.verifyIdToken(token)
     const userId = decodedToken.uid
 

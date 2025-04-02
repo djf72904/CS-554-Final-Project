@@ -25,11 +25,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Verify Firebase token
     const decodedToken = await auth.verifyIdToken(token)
     const userId = decodedToken.uid
 
-    // Get the existing listing to check ownership
     const existingListing = await getListing(params.id)
 
     if (!existingListing) {
@@ -58,11 +56,9 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Verify Firebase token
     const decodedToken = await auth.verifyIdToken(token)
     const userId = decodedToken.uid
 
-    // Get the existing listing to check ownership
     const existingListing = await getListing(params.id)
 
     if (!existingListing) {

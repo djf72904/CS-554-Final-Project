@@ -11,15 +11,12 @@ export async function GET(request: NextRequest) {
 
   try {
     if (query) {
-      // Handle search
       const listings = await searchListings(query)
       return NextResponse.json({ listings })
     } else if (school) {
-      // Handle school filter
       const listings = await getListingsBySchool(school)
       return NextResponse.json({ listings })
     } else {
-      // Handle pagination
       const result = await getListingsWithPagination(page, limit)
       return NextResponse.json(result)
     }
@@ -37,7 +34,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Verify Firebase token
     const decodedToken = await auth.verifyIdToken(token)
     const userId = decodedToken.uid
 

@@ -33,7 +33,6 @@ const TransactionSchema: Schema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
-// Update the updatedAt field on save
 TransactionSchema.pre("save", function (next) {
   this.updatedAt = new Date()
   next()

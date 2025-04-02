@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Verify Firebase token
     const decodedToken = await auth.verifyIdToken(token)
     const userId = decodedToken.uid
 

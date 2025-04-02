@@ -40,7 +40,6 @@ export default function ListItemForm() {
       const fileArray = Array.from(files)
       setImages((prevImages) => [...prevImages, ...fileArray])
 
-      // Create preview URLs
       const newImageUrls = fileArray.map((file) => URL.createObjectURL(file))
       setImageUrls((prevUrls) => [...prevUrls, ...newImageUrls])
     }
@@ -49,7 +48,6 @@ export default function ListItemForm() {
   const removeImage = (index: number) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index))
 
-    // Revoke the object URL to avoid memory leaks
     URL.revokeObjectURL(imageUrls[index])
     setImageUrls((prevUrls) => prevUrls.filter((_, i) => i !== index))
   }
@@ -78,7 +76,6 @@ export default function ListItemForm() {
     setIsLoading(true)
 
     try {
-      // Upload images to Firebase Storage
       const imageDownloadUrls = await Promise.all(
         images.map(async (image) => {
           const storageRef = ref(storage, `listings/${user.uid}/${Date.now()}-${image.name}`)
@@ -87,7 +84,6 @@ export default function ListItemForm() {
         }),
       )
 
-      // Create listing using server action
       await createListingAction(
         {
           title: formData.title,
