@@ -6,7 +6,6 @@ export interface IUser extends Document {
   uid: string
   displayName: string | null
   email: string | null
-  photoURL: string | null
   isEduEmail: boolean
   school?: string
   credits: number
@@ -18,7 +17,6 @@ const UserSchema: Schema = new Schema({
   uid: { type: String, required: true, unique: true },
   displayName: { type: String, default: null },
   email: { type: String, default: null },
-  photoURL: { type: String, default: null },
   isEduEmail: { type: Boolean, default: false },
   school: { type: String, default: "" },
   credits: { type: Number, default: 0 },

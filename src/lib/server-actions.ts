@@ -7,15 +7,15 @@ import Transaction from "@/models/Transaction"
 import mongoose from "mongoose"
 import { revalidatePath } from "next/cache"
 
-export async function getListings(limit = 12) {
+export async function getListings() {
   await dbConnect()
 
-  const listings = await Listing.find({ status: "active" }).sort({ createdAt: -1 }).limit(limit).lean()
+  const listings = await Listing.find({ status: "active" }).sort({ createdAt: -1 }).lean()
 
   return JSON.parse(JSON.stringify(listings))
 }
 
-export async function getListingsByCategory(category: string, limit = 12) {
+export async function getListingsByCategory(category: string) {
   await dbConnect()
 
   const listings = await Listing.find({
@@ -23,7 +23,6 @@ export async function getListingsByCategory(category: string, limit = 12) {
     category: category,
   })
     .sort({ createdAt: -1 })
-    .limit(limit)
     .lean()
 
   return JSON.parse(JSON.stringify(listings))
@@ -46,7 +45,7 @@ export async function getListingById(id: string) {
 }
 
 
-export async function getListingsBySchool(school: string, limit = 20) {
+export async function getListingsBySchool(school: string) {
   await dbConnect()
 
   const listings = await Listing.find({
@@ -54,15 +53,14 @@ export async function getListingsBySchool(school: string, limit = 20) {
     status: "active",
   })
     .sort({ createdAt: -1 })
-    .limit(limit)
     .lean()
 
   return JSON.parse(JSON.stringify(listings))
 }
 
-export async function searchListings(query: string, limit = 20) {
+export async function searchListings(query: string, base_url: string) {
 
-  const listings = await fetch('http://localhost:3000/api/listings?query=' + query)
+  const listings = await fetch(`${base_url}/api/listings?query=` + query)
   return JSON.parse(JSON.stringify(listings.json()))
 
 }

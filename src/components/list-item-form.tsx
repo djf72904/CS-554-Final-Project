@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/hooks/use-toast"
+import {imageDownloadUrls} from "@/app/list-item/_utils/photo-handler";
 
 export default function ListItemForm() {
   const router = useRouter()
@@ -76,13 +77,7 @@ export default function ListItemForm() {
     setIsLoading(true)
 
     try {
-      const imageDownloadUrls = await Promise.all(
-        images.map(async (image) => {
-          const storageRef = ref(storage, `listings/${user.uid}/${Date.now()}-${image.name}`)
-          const snapshot = await uploadBytes(storageRef, image)
-          return getDownloadURL(snapshot.ref)
-        }),
-      )
+      const imgUrls = await imageDownloadUrls(images)
 
       await createListingAction(
         {
@@ -92,7 +87,7 @@ export default function ListItemForm() {
           condition: formData.condition,
           price: Number.parseFloat(formData.price),
           credits: Number.parseInt(formData.credits),
-          images: imageDownloadUrls,
+          images: imgUrls,
           school: userProfile?.school || "",
         },
         user.uid,

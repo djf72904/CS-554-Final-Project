@@ -48,7 +48,6 @@ export default function Header() {
                   <div className="flex items-center border rounded-full p-1 shadow-sm cursor-pointer">
                     <Menu className="h-5 w-5 ml-2" />
                     <Avatar className="ml-2 h-8 w-8">
-                      <AvatarImage src={user.photoURL || ""} alt={user.displayName || "User"} />
                       <AvatarFallback className="bg-slate-100">
                         {user.displayName ? user.displayName.charAt(0).toUpperCase() : "U"}
                       </AvatarFallback>

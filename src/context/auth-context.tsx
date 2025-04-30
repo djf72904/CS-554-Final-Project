@@ -32,7 +32,6 @@ async function createUserProfile(user: FirebaseUser): Promise<any> {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
-        photoURL: user.photoURL,
         school: user.email?.split("@")[1]?.split(".edu")[0] || "",
       }),
     })

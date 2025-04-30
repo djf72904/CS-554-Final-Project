@@ -45,7 +45,6 @@ export async function POST(request: NextRequest) {
       uid: decodedToken.uid,
       displayName: userData.displayName,
       email: userData.email,
-      photoURL: userData.photoURL,
       emailVerified: decodedToken.email_verified || false,
     })
 

@@ -1,8 +1,6 @@
 'use server'
 import dbConnect from "./mongoose"
 import User, { type IUser } from "@/models/User"
-import type { User as FirebaseUser } from "firebase/auth"
-import searchColleges from "@/lib/college";
 
 export type UserProfile = Omit<IUser, "_id" | "__v">
 export async function createUserProfile(user: any): Promise<any> {
@@ -18,7 +16,6 @@ export async function createUserProfile(user: any): Promise<any> {
       uid: user.uid,
       displayName: user.displayName,
       email: user.email,
-      photoURL: user.photoURL,
       isEduEmail: user.email?.endsWith(".edu") || false,
       school: school,
       credits: 0,
@@ -31,7 +28,6 @@ export async function createUserProfile(user: any): Promise<any> {
     uid: userProfile.uid,
     displayName: userProfile.displayName,
     email: userProfile.email,
-    photoURL: userProfile.photoURL,
     isEduEmail: userProfile.isEduEmail,
     school: userProfile.school,
     credits: userProfile.credits,
@@ -48,7 +44,6 @@ export async function getUserProfile(userId: string): Promise<any | null> {
     uid: user.uid,
     displayName: user.displayName,
     email: user.email,
-    photoURL: user.photoURL,
     isEduEmail: user.isEduEmail,
     school: user.school,
     credits: user.credits,
