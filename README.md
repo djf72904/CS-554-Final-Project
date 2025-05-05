@@ -2,7 +2,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, install the necessary packages, by running: npm install --legacy-peer-dep
+First, install the necessary packages, by running: 
+```bash
+npm install --legacy-peer-deps
+# or
+npm install --force
+```
 
 Then run the development server:
 
