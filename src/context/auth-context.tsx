@@ -113,9 +113,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const result = await signInWithPopup(auth, provider)
 
       if (result.user.email?.endsWith(".edu")) {
-        await createUserProfile(result.user)
         const profile = await getUserProfile(result.user.uid)
-        setUserProfile(profile)
+        if(!profile) {
+          await createUserProfile(result.user)
+        }
+        const finalProfile = profile || await getUserProfile(result.user.uid)
+        setUserProfile(finalProfile)
         router.push("/")
       } else {
         await firebaseSignOut(auth)
