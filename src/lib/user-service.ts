@@ -40,6 +40,7 @@ export async function getUserProfile(userId: string): Promise<any | null> {
   await dbConnect()
 
   const user = await User.findOne({ uid: userId })
+  if(!user) return null
   return {
     uid: user.uid,
     displayName: user.displayName,
