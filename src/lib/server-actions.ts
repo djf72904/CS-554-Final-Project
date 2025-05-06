@@ -80,19 +80,6 @@ export async function getListingsByUserId(userId: string) {
   return JSON.parse(JSON.stringify(listings))
 }
 
-export async function getTransactionsByUserId(userId: string) {
-  await dbConnect()
-
-  const transactions = await Transaction.find({
-    $or: [{ buyerId: userId }, { sellerId: userId }],
-  })
-    .sort({ createdAt: -1 })
-    .populate("listingId")
-    .lean()
-
-  return JSON.parse(JSON.stringify(transactions))
-}
-
 export async function createListingAction(data: any, userId: string) {
   await dbConnect()
 
@@ -109,6 +96,7 @@ export async function createListingAction(data: any, userId: string) {
   return JSON.parse(JSON.stringify(savedListing))
 }
 
+//TODO: use
 export async function updateListingAction(id: string, data: any, userId: string) {
   await dbConnect()
 
@@ -139,6 +127,8 @@ export async function updateListingAction(id: string, data: any, userId: string)
   return JSON.parse(JSON.stringify(updatedListing))
 }
 
+
+//TODO: use
 export async function deleteListingAction(id: string, userId: string) {
   await dbConnect()
 

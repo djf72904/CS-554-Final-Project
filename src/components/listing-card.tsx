@@ -30,13 +30,6 @@ export default function ListingCard({ listing }: ListingCardProps) {
             {capitalizeFirstLetter(listing.school)}
           </div>
         )}
-        <Button
-          size="icon"
-          variant="ghost"
-          className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/80 backdrop-blur-sm"
-        >
-          <Heart className="h-4 w-4" />
-        </Button>
       </div>
       <div className="mt-2">
         <div className="flex justify-between">

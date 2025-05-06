@@ -12,6 +12,8 @@ export interface IUser extends Document {
   rating: number
   createdAt: Date
   updatedAt: Date
+    likedPosts: string[]
+    reviews?: string[]
 }
 
 const UserSchema: Schema = new Schema({
@@ -24,6 +26,8 @@ const UserSchema: Schema = new Schema({
   rating: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  likedPosts: { type: [String], default: [] },
+    reviews: { type: [String], default: [] },
 })
 
 UserSchema.pre("save", function (next) {

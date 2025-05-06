@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getListing, updateListing, deleteListing } from "@/lib/listing-service"
+import { getListing, updateListing, deleteListing } from "@/lib/listings"
 import { auth } from "@/lib/firebase-admin"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
