@@ -37,6 +37,11 @@ export default function Header() {
                   <span className="text-sm font-medium">List your item</span>
                 </Button>
               </Link>
+              <Link href="/messages">
+                <Button variant="ghost" className="hidden md:flex items-center gap-2 rounded-full">
+                  <span className="text-sm font-medium">Messages</span>
+                </Button>
+              </Link>
                 <div className="hidden md:flex items-center ">
                   <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-800 rounded-full">{school}</span>
                 </div>
