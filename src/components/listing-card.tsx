@@ -2,6 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {capitalizeFirstLetter} from "@/lib/text";
 
 interface ListingCardProps {
   listing: {
@@ -26,7 +27,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
         />
         {listing.school && (
           <div className="absolute top-3 left-3 bg-white px-2 py-1 rounded-md text-xs font-medium">
-            {listing.school}
+            {capitalizeFirstLetter(listing.school)}
           </div>
         )}
         <Button
@@ -51,7 +52,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
             <span className="ml-1 text-sm">5.0</span>
           </div>
         </div>
-        <p className="text-sm text-gray-500">{listing.school || "Unknown"}</p>
+        <p className="text-sm text-gray-500">{capitalizeFirstLetter(listing.school || "Unknown")}</p>
         <p className="text-sm text-gray-500">Available now</p>
         <p className="font-semibold mt-1">
           ${listing.price}{" "}

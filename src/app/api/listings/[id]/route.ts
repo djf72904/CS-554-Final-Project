@@ -4,7 +4,7 @@ import { auth } from "@/lib/firebase-admin"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const listing = await getListing(params.id)
+    const listing = await getListing((await params).id)
 
     if (!listing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 })
@@ -28,7 +28,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const decodedToken = await auth.verifyIdToken(token)
     const userId = decodedToken.uid
 
-    const existingListing = await getListing(params.id)
+    const existingListing = await getListing((await params).id)
 
     if (!existingListing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 })
@@ -39,7 +39,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     const data = await request.json()
-    const updatedListing = await updateListing(params.id, data)
+    const updatedListing = await updateListing((await params).id, data)
 
     return NextResponse.json({ listing: updatedListing })
   } catch (error) {
@@ -59,7 +59,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     const decodedToken = await auth.verifyIdToken(token)
     const userId = decodedToken.uid
 
-    const existingListing = await getListing(params.id)
+    const existingListing = await getListing((await params).id)
 
     if (!existingListing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 })
@@ -69,7 +69,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
-    await deleteListing(params.id)
+    await deleteListing((await params).id)
 
     return NextResponse.json({ success: true })
   } catch (error) {

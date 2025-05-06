@@ -5,6 +5,14 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/auth-context"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription, DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
 
 interface PurchaseOptionsProps {
   item: {
@@ -13,14 +21,17 @@ interface PurchaseOptionsProps {
     price: number
     credits: number
     userId: string
+    pickup_date: string
+    pickup_location: string
   }
   seller: any
 }
 
 export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
-  const router = useRouter()
-  const { user, userProfile } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter()
+    const { user, userProfile } = useAuth()
+    const [isLoading, setIsLoading] = useState(false)
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const handlePurchase = async (paymentMethod: "cash" | "credit") => {
     if (!user) {
@@ -31,14 +42,8 @@ export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
     setIsLoading(true)
 
     try {
-      // Here you would implement the purchase logic
-      // For now, we'll just simulate a delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Redirect to a success page or show a success message
-      alert(`Purchase with ${paymentMethod} initiated! This would connect to a real payment system in production.`)
+        setIsDialogOpen(true)
     } catch (error) {
-      console.error("Error making purchase:", error)
       alert("There was an error processing your purchase. Please try again.")
     } finally {
       setIsLoading(false)
@@ -49,6 +54,27 @@ export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
 
   return (
       <div className="border rounded-xl p-6 shadow-sm">
+        {/* Dialog for purchase completion */}
+        <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+            <DialogContent>
+                <DialogHeader>
+                <DialogTitle>Purchase Completed</DialogTitle>
+                <DialogDescription>
+                {/*  Item details and pickup location and date*/}
+                <div className="text-sm text-gray-500">
+                    <p className="font-semibold">{item.title}</p>
+                    <p>Pickup Date: {item.pickup_date}</p>
+                    <p>Pickup Location: {item.pickup_location}</p>
+                </div>
+                </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                <Button variant="secondary" onClick={() => router.push("/profile")}>
+                    Close
+                </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
         <div className="flex items-baseline justify-between">
           <div className="text-2xl font-bold">${item.price}</div>
           <div className="text-gray-600">or {item.credits} credits</div>
@@ -57,11 +83,20 @@ export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
         <div className="mt-6 grid grid-cols-2 gap-2">
           <div className="border rounded-md p-3">
             <div className="text-xs text-gray-500">PICKUP DATE</div>
-            <div className="font-medium">Flexible</div>
+            <div className="font-medium">{
+              // 1 day from now
+                new Date(new Date().setDate(
+                    new Date().getDate() + 1
+                )).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    })
+            }</div>
           </div>
           <div className="border rounded-md p-3">
             <div className="text-xs text-gray-500">LOCATION</div>
-            <div className="font-medium">Campus Center</div>
+            <div className="font-medium">{item.pickup_location}</div>
           </div>
         </div>
 

@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {capitalizeFirstLetter} from "@/lib/text";
 
 export default function Header() {
   const { user, signOut, school } = useAuth()
@@ -43,7 +44,7 @@ export default function Header() {
                 </Button>
               </Link>
                 <div className="hidden md:flex items-center ">
-                  <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-800 rounded-full">{school}</span>
+                  <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-800 rounded-full">{capitalizeFirstLetter(school)}</span>
                 </div>
                 <div className="flex items-center md:hidden">
                   <span className="text-xs  font-medium px-2 py-1 bg-green-100 text-green-800 rounded-full">{school.split(" ").map((wrds)=>wrds[0]).filter(wrds=>wrds?.match(/^[A-Z]/)).join("")}</span>

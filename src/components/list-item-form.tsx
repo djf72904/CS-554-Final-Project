@@ -33,6 +33,7 @@ export default function ListItemForm() {
     condition: "",
     price: "",
     credits: "",
+    pickup_location: "",
   })
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,6 +90,7 @@ export default function ListItemForm() {
           credits: Number.parseInt(formData.credits),
           images: imgUrls,
           school: userProfile?.school || "",
+          pickup_location: formData.pickup_location,
         },
         user.uid,
       )
@@ -173,31 +175,43 @@ export default function ListItemForm() {
             </Select>
           </div>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="price">Price (in $)</Label>
             <Input
-              id="price"
-              type="number"
-              min="0"
-              step="0.01"
-              placeholder="0.00"
-              required
-              value={formData.price}
-              onChange={handleChange}
+                id="price"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                required
+                value={formData.price}
+                onChange={handleChange}
             />
           </div>
           <div>
             <Label htmlFor="credits">Price (in credits)</Label>
             <Input
-              id="credits"
-              type="number"
-              min="0"
-              placeholder="0"
-              required
-              value={formData.credits}
-              onChange={handleChange}
+                id="credits"
+                type="number"
+                min="0"
+                placeholder="0"
+                required
+                value={formData.credits}
+                onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="price">Pickup Location</Label>
+            <Input
+                id="pickup_location"
+                type="text"
+                placeholder="100 Main St, Cityville"
+                required
+                value={formData.pickup_location}
+                onChange={handleChange}
             />
           </div>
         </div>

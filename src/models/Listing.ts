@@ -25,6 +25,7 @@ const ListingSchema: Schema = new Schema({
   images: { type: [String], default: [] },
   userId: { type: String, required: true, index: true },
   school: { type: String, required: true, index: true },
+  pickup_location: { type: String, required: true },
   status: {
     type: String,
     enum: ["active", "sold", "pending"],

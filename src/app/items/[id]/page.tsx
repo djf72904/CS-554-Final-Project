@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getListingById, getUserById } from "@/lib/server-actions"
 import PurchaseOptions from "./purchase-options"
+import {capitalizeFirstLetter} from "@/lib/text";
 
 export default async function ItemPage({ params }: { params: { id: string } }) {
-  const item = await getListingById(params.id)
+  const item = await getListingById((await params).id)
 
   if (!item) {
     notFound()
@@ -72,7 +73,7 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
                 <div className="flex items-start justify-between border-b pb-6">
                   <div>
                     <h2 className="text-xl font-semibold">
-                      {item.title} at {item.school}
+                      {item.title} at {capitalizeFirstLetter(item.school)}
                     </h2>
                     <p className="text-gray-500">
                       Condition: {item.condition} • Posted {new Date(item.createdAt).toLocaleDateString()}
@@ -99,7 +100,7 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
                     </div>
                     <div>
                       <h4 className="font-medium">School</h4>
-                      <p className="text-gray-600">{item.school}</p>
+                      <p className="text-gray-600">{capitalizeFirstLetter(item.school)}</p>
                     </div>
                     <div>
                       <h4 className="font-medium">Listed</h4>
@@ -116,7 +117,7 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
                     </Avatar>
                     <div>
                       <h4 className="font-medium">{seller?.displayName || "User"}</h4>
-                      <p className="text-gray-600">{seller?.school || "Unknown"}</p>
+                      <p className="text-gray-600">{capitalizeFirstLetter(seller?.school) || "Unknown"}</p>
                       <div className="flex items-center mt-1">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

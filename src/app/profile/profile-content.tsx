@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {capitalizeFirstLetter} from "@/lib/text";
 
 export default function ProfileContent() {
   const [activeTab, setActiveTab] = useState("listings")
@@ -55,7 +56,7 @@ export default function ProfileContent() {
           <div className="space-y-4">
             <div>
               <p className="text-sm font-medium">School</p>
-              <p>{userProfile.school ?? "Not specified"}</p>
+              <p>{capitalizeFirstLetter(userProfile.school ?? "Not specified")}</p>
             </div>
             <div>
               <p className="text-sm font-medium">Member Since</p>

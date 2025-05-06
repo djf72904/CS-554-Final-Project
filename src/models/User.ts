@@ -9,6 +9,7 @@ export interface IUser extends Document {
   isEduEmail: boolean
   school?: string
   credits: number
+  rating: number
   createdAt: Date
   updatedAt: Date
 }
@@ -20,12 +21,14 @@ const UserSchema: Schema = new Schema({
   isEduEmail: { type: Boolean, default: false },
   school: { type: String, default: "" },
   credits: { type: Number, default: 0 },
+  rating: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 })
 
 UserSchema.pre("save", function (next) {
   this.updatedAt = new Date()
+  this.rating = 5
   next()
 })
 

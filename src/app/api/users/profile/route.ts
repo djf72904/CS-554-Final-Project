@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const userId = decodedToken.uid
     const existingProfile = await getUserProfile(userId)
     if (existingProfile) {
-      return NextResponse.json({ user: existingProfile }, { status: 200 }) // or 409 Conflict if preferred
+      return NextResponse.json({ user: existingProfile }, { status: 200 })
     }
 
     const userData = await request.json()
