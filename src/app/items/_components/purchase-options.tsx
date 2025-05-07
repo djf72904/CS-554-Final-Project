@@ -22,6 +22,7 @@ import {Input} from "@/components/ui/input";
 import {createPaymentMethod} from "@/lib/payment-methods";
 import {toast, useToast} from "@/hooks/use-toast";
 import {MongoPaymentMethodsType} from "@/models/PaymentMethods";
+import {cn} from "@/lib/utils";
 
 interface PurchaseOptionsProps {
   item: {
@@ -150,6 +151,26 @@ export default function PurchaseOptions({ item, pm }: Readonly<PurchaseOptionsPr
         }
     }
 
+    const getCardIcon = (cardType: string) => {
+        switch (cardType) {
+            case "visa":
+                return <div className="text-blue-600 font-bold italic text-sm">VISA</div>
+            case "mastercard":
+                return (
+                    <div className="flex">
+                        <div className="w-4 h-4 bg-red-500 rounded-full opacity-80 -mr-1.5"></div>
+                        <div className="w-4 h-4 bg-yellow-400 rounded-full opacity-80"></div>
+                    </div>
+                )
+            case "amex":
+                return <div className="text-green-600 font-bold text-xs">AMEX</div>
+            case "discover":
+                return <div className="text-orange-500 font-bold text-xs">DISCOVER</div>
+            default:
+                return <CreditCard className="h-4 w-4" />
+        }
+    }
+
   return (
       <div className="border rounded-xl p-6 shadow-sm">
         {/* Dialog for purchase completion */}
@@ -199,36 +220,48 @@ export default function PurchaseOptions({ item, pm }: Readonly<PurchaseOptionsPr
                               </TabsTrigger>
                           </TabsList>
 
-                          <TabsContent value="card" className="space-y-4 mt-4">
-                              <div>
+                          <TabsContent value="card" className="mt-4 flex flex-col gap-2  ">
                                   {
                                       pm.map(paymentMethods=>{
                                             return (
-                                                <div key={paymentMethods._id as string} className="flex items-center justify-between p-2 border rounded-md mb-2">
-                                                    <div>
-                                                        <h3 className="font-medium">{paymentMethods.billingName}</h3>
-                                                        <p className="text-sm text-muted-foreground">{paymentMethods.cardNumber}</p>
-                                                    </div>
-                                                    {
-                                                        userPaymentMethod?._id === paymentMethods._id ? (
-                                                            <button onClick={()=>{
-                                                                setUserPaymentMethod(null)
-                                                            }} className={'flex space-x-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 px-2 py-1 rounded-full'}>
-                                                                <p className={'text-xs'}>Selected</p>
-                                                                <X className={'w-4 h-4'}/>
-                                                            </button>
-                                                        ) : (
-                                                            <Button variant="outline" size="sm" onClick={() => setUserPaymentMethod(paymentMethods)}>
-                                                                Use this card
-                                                            </Button>
-                                                        )
-                                                    }
+                                                <div  key={paymentMethods.id} className={'flex space-x-2 w-full items-center'}>
+                                                <div
+                                                    onClick={()=>{
+                                                        setUserPaymentMethod(paymentMethods)
+                                                    }}
 
+                                                    className={cn(
+                                                        `flex items-center justify-between rounded-lg border p-4 hover:bg-gray-200 duration-150 cursor-pointer flex-1 ${
+                                                            paymentMethods.cardNumber === userPaymentMethod?.cardNumber && 'border-red-400'
+                                                        }`,
+                                                    )}
+                                                >
+                                                    <div className="flex items-center space-x-3">
+                                                        <div className="flex items-center space-x-3">
+                                                            <div className="h-10 w-14 flex items-center justify-center rounded bg-gray-100">
+                                                                {getCardIcon(paymentMethods.cardNumber.startsWith("4") ? "visa" : paymentMethods.cardNumber.startsWith("5") ? "mastercard" : paymentMethods.cardNumber.startsWith("3") ? "amex" : "other")}
+                                                            </div>
+                                                            <div>
+                                                                <Label htmlFor={paymentMethods.id} className="text-base font-medium flex items-center">
+                                                                    •••• {paymentMethods.cardNumber.slice(paymentMethods.cardNumber.length - 5, paymentMethods.cardNumber.length - 1)}
+                                                                </Label>
+                                                                <div className="text-sm text-muted-foreground">Expires {paymentMethods.expirationDate}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
+                                                    {  paymentMethods.cardNumber === userPaymentMethod?.cardNumber &&  <button
+                                                        className={'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 px-2 py-1 rounded-full'}
+                                                        onClick={()=>{
+                                                            setUserPaymentMethod(null)
+                                                        }}>
+                                                        Clear
+                                                    </button>}
+                                                </div>
+
                                             )
                                       })
                                   }
-                              </div>
                               {
                                   !userPaymentMethod && <>
                                       <div className="space-y-2">
