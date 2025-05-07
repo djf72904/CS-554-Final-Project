@@ -109,7 +109,7 @@ export default function ProfileContent() {
             ) : listings.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {listings.map((item: any) => (
-                  <Card key={item._id}>
+                  <Card key={item._id} className="group bg-gray-100 rounded-xl shadow-sm ">
                     <CardHeader className="p-0">
                       <div className="aspect-square relative">
                         <Image
@@ -120,7 +120,7 @@ export default function ProfileContent() {
                         />
                         <div
                           className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-semibold ${
-                            item.status === "active" ? "bg-green-500 text-white" : "bg-gray-500 text-white"
+                            item.status === "active" ? "bg-emerald-400 text-white" : "bg-gray-500 text-white"
                           }`}
                         >
                           {item.status === "active" ? "Active" : "Sold"}
@@ -155,7 +155,7 @@ export default function ProfileContent() {
           <TabsContent value="purchases">
             <div className="text-center text-muted-foreground py-8">
               <p className="mb-4">You haven't made any purchases yet.</p>
-              <Link href="/">
+              <Link href="/public">
                 <Button>Browse Items</Button>
               </Link>
             </div>

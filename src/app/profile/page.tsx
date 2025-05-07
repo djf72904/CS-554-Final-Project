@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import ProtectedRoute from "@/components/protected-route"
-import ProfileContent from "./profile-content"
+import ProfileContent from "./_components/profile-content"
 import {ProfileSkeleton} from "@/app/profile/_components/ProfileSkeleton";
 
 export default function ProfilePage() {

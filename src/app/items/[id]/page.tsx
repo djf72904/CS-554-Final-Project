@@ -6,10 +6,10 @@ import { Share2, Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getListingById, getUserById } from "@/lib/server-actions"
-import PurchaseOptions from "./purchase-options"
+import PurchaseOptions from "../_components/purchase-options"
 import {capitalizeFirstLetter} from "@/lib/text";
-import {ListingItem} from "@/app/items/[id]/ListingItem";
-import {UserRating} from "@/app/items/[id]/Rating";
+import {ListingItem} from "@/app/items/_components/ListingItem";
+import {UserRating} from "@/app/items/_components/Rating";
 
 export default async function ItemPage({ params }: { params: { id: string } }) {
   const item = await getListingById((await params).id)
