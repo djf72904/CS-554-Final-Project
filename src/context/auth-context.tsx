@@ -15,6 +15,7 @@ import { getUserProfile, getUserByEmail, type UserProfile } from "@/lib/users"
 import { useRouter } from "next/navigation"
 import searchColleges from "@/lib/college";
 import type {User as FirebaseUser} from "@firebase/auth";
+import {deleteCookie, setCookie} from "cookies-next";
 
 
 
@@ -84,11 +85,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(user)
 
       if (user) {
+
+        const token = await user.getIdToken()
+
+        // Set the token in cookies
+        setCookie('auth-token', token, {
+          maxAge: 60 * 60, // 1 hour (matches Firebase token expiry)
+          path: '/',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict'
+        });
+
+
         if (user.email) {
           searchColleges.byDomain(user.email.split('@')[1]).then((res) => {
             setSchool(res[0].name)
           })
         } else {
+          deleteCookie('auth-token');
           setSchool('')
         }
 
@@ -151,18 +165,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        userProfile,
-        loading,
-        signInWithGoogle,
-        signOut,
-        school: school,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider
+          value={{
+            user,
+            userProfile,
+            loading,
+            signInWithGoogle,
+            signOut,
+            school: school,
+          }}
+      >
+        {children}
+      </AuthContext.Provider>
   )
 }
 
