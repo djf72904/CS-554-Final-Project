@@ -11,12 +11,11 @@ import {
   onAuthStateChanged,
 } from "firebase/auth"
 import { auth } from "@/lib/firebase"
-import { getUserProfile, type UserProfile } from "@/lib/user-service"
+import { getUserProfile, getUserByEmail, type UserProfile } from "@/lib/user-service"
 import { useRouter } from "next/navigation"
 import searchColleges from "@/lib/college";
 import type {User as FirebaseUser} from "@firebase/auth";
-import dbConnect from "@/lib/mongoose";
-import User from "@/models/User"
+
 
 
 async function createUserProfile(user: FirebaseUser): Promise<any> {
@@ -113,11 +112,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const result = await signInWithPopup(auth, provider)
 
       if (result.user.email?.endsWith(".edu")) {
-        const profile = await getUserProfile(result.user.uid)
+        const profile = await getUserByEmail(result.user.email)
         if(!profile) {
           await createUserProfile(result.user)
         }
-        const finalProfile = profile || await getUserProfile(result.user.uid)
+        const finalProfile = profile || await getUserByEmail(result.user.email)
         setUserProfile(finalProfile)
         router.push("/")
       } else {
