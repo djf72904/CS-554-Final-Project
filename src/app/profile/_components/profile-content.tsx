@@ -155,7 +155,7 @@ export default function ProfileContent() {
           <TabsContent value="purchases">
             <div className="text-center text-muted-foreground py-8">
               <p className="mb-4">You haven't made any purchases yet.</p>
-              <Link href="/public">
+              <Link href="/">
                 <Button>Browse Items</Button>
               </Link>
             </div>
