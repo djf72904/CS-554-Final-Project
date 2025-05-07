@@ -27,17 +27,17 @@ export const ListingItem = ({item, isLiked, jwt}: {
                     "Authorization": `Bearer ${jwt}`
                 }
             });
-            const fullUserInfo = JSON.parse(await getResponse.json())
+            const fullUserInfo = JSON.parse((await getResponse.json()).user)
             if(staticIsSaved){
-                const removed = fullUserInfo.user.likedPosts.indexOf(item._id)
-                fullUserInfo.user.likedPosts.splice(removed, 1)
+                const removed = fullUserInfo.likedPosts.indexOf(item._id)
+                fullUserInfo.likedPosts.splice(removed, 1)
             }
             else{
-                fullUserInfo.user.likedPosts.push(item._id)
+                fullUserInfo.likedPosts.push(item._id)
             }
             const patchResponse = await fetch("/api/users/profile", {
                 method: "PATCH",
-                body: JSON.stringify(fullUserInfo.user),
+                body: JSON.stringify(fullUserInfo),
                 headers:{
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${jwt}`
