@@ -4,6 +4,8 @@ import dbConnect from "./mongoose"
 import User, { type IUser } from "@/models/User"
 
 export type UserProfile = Omit<IUser, "_id" | "__v">
+
+
 export async function createUserProfile(user: any): Promise<any> {
   await dbConnect()
 

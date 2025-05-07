@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import {createUserProfile, getUserProfile, updateUserProfile} from "@/lib/user-service"
+import {createUserProfile, getUserProfile, updateUserProfile} from "@/lib/users"
 import { auth } from "@/lib/firebase-admin"
 
 export async function GET(request: NextRequest) {

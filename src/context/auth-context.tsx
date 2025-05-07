@@ -11,7 +11,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth"
 import { auth } from "@/lib/firebase"
-import { getUserProfile, getUserByEmail, type UserProfile } from "@/lib/user-service"
+import { getUserProfile, getUserByEmail, type UserProfile } from "@/lib/users"
 import { useRouter } from "next/navigation"
 import searchColleges from "@/lib/college";
 import type {User as FirebaseUser} from "@firebase/auth";
@@ -84,6 +84,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           })
         } else {
           setSchool('')
+        }
+
+        if(!user.email?.endsWith(".edu")) {
+          return;
         }
 
         try {
