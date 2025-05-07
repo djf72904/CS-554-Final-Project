@@ -35,7 +35,7 @@ export default function CategoryFilters({schools}: Readonly<{ schools: string[] 
     }
 
   return (
-    <div className="flex justify-between w-full overflow-x-auto pb-4 no-scrollbar">
+    <div className="flex justify-between w-full overflow-x-auto pb-4 no-scrollbar items-center">
       <Tabs value={category} onValueChange={handleCategoryChange} className="w-full">
         <TabsList className="flex w-full justify-start h-auto bg-transparent p-0 gap-8">
           <TabsTrigger
