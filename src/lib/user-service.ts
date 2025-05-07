@@ -6,7 +6,7 @@ export type UserProfile = Omit<IUser, "_id" | "__v">
 export async function createUserProfile(user: any): Promise<any> {
   await dbConnect()
 
-  let userProfile = await User.findOne({ uid: user.uid })
+  let userProfile = await User.findOne({ email: user.email })
 
   if (!userProfile) {
     const domain = user.email?.split("@")[1] || ""
@@ -40,6 +40,23 @@ export async function getUserProfile(userId: string): Promise<any | null> {
   await dbConnect()
 
   const user = await User.findOne({ uid: userId })
+  if(!user) return null
+  return {
+    uid: user.uid,
+    displayName: user.displayName,
+    email: user.email,
+    isEduEmail: user.isEduEmail,
+    school: user.school,
+    credits: user.credits,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt
+
+  }
+}
+export async function getUserByEmail(userEmail: string): Promise<any | null> {
+  await dbConnect()
+
+  const user = await User.findOne({ email: userEmail })
   if(!user) return null
   return {
     uid: user.uid,

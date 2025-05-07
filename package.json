@@ -68,9 +68,12 @@
     "firebase": "latest",
     "mongodb": "latest",
     "firebase-admin": "latest",
-    "mongoose": "latest"
+    "mongoose": "latest",
+    "amqp-connection-manager": "^4.1.14",
+    "amqplib": "^0.10.4"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.5",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
