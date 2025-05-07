@@ -19,6 +19,8 @@ export async function createUserProfile(user: any): Promise<any> {
       isEduEmail: user.email?.endsWith(".edu") || false,
       school: school,
       credits: 0,
+      rating: 0,
+      reviews: [],
     })
 
     userProfile = await newUser.save()
@@ -32,7 +34,9 @@ export async function createUserProfile(user: any): Promise<any> {
     school: userProfile.school,
     credits: userProfile.credits,
     createdAt: userProfile.createdAt,
-    updatedAt: userProfile.updatedAt
+    updatedAt: userProfile.updatedAt,
+    rating: userProfile.rating,
+    reviews: userProfile.reviews,
   }
 }
 

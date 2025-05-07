@@ -80,7 +80,7 @@ export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
           <div className="text-gray-600">or {item.credits} credits</div>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-2">
+        <div className="mt-6 grid grid-cols-1 gap-2">
           <div className="border rounded-md p-3">
             <div className="text-xs text-gray-500">PICKUP DATE</div>
             <div className="font-medium">{
@@ -93,10 +93,6 @@ export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
                     day: "2-digit",
                     })
             }</div>
-          </div>
-          <div className="border rounded-md p-3">
-            <div className="text-xs text-gray-500">LOCATION</div>
-            <div className="font-medium">{item.pickup_location}</div>
           </div>
         </div>
 
@@ -130,7 +126,7 @@ export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
           </div>
           <div className="flex justify-between font-semibold mt-4 pt-4 border-t">
             <div>Total</div>
-            <div>${Number(item.price) + 5}</div>
+            <div>${Number(item.price)}</div>
           </div>
         </div>
 

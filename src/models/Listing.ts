@@ -10,6 +10,8 @@ export interface IListing extends Document {
   images: string[]
   userId: string
   school: string
+  likes: string[]
+    pickup_location: string
   status: "active" | "sold" | "pending"
   createdAt: Date
   updatedAt: Date
@@ -26,6 +28,7 @@ const ListingSchema: Schema = new Schema({
   userId: { type: String, required: true, index: true },
   school: { type: String, required: true, index: true },
   pickup_location: { type: String, required: true },
+    likes: { type: [String], default: [] },
   status: {
     type: String,
     enum: ["active", "sold", "pending"],

@@ -11,7 +11,7 @@ export default async function CategoryPage({ params }: Readonly<{ params: { cate
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-4">
-        <CategoryFilters />
+        {/*<CategoryFilters />*/}
 
         <div className="flex justify-between items-center mb-4">
           <Button variant="outline" size="sm" className="rounded-full">
