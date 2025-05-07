@@ -10,6 +10,7 @@ import PurchaseOptions from "../_components/purchase-options"
 import {capitalizeFirstLetter} from "@/lib/text";
 import {ListingItem} from "@/app/items/_components/ListingItem";
 import {UserRating} from "@/app/items/_components/Rating";
+import {getCurrentUser} from "@/lib/auth"
 
 export default async function ItemPage({ params }: { params: { id: string } }) {
   const item = await getListingById((await params).id)
@@ -19,9 +20,18 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
   }
 
   const seller = await getUserById(item.userId)
+  const user = await getCurrentUser()
+  let userInfo;
+  let isLiked = false ;
+  if(user){
+    const userInfo = await getUserById(user.id)
+    if(item.likes.includes(userInfo.uid)){
+      isLiked = true
+    }
+  }
+
 
   //Todo: Fetch the liked status from the server
-  const isLiked = false
 
 
   return <div className="min-h-screen">
@@ -29,7 +39,7 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">{item.title}</h1>
         <div className="flex items-center gap-4">
-          <ListingItem item={item} isLiked={isLiked}/>
+          <ListingItem jwt={user?.jwt!} item={item} isLiked={isLiked}/>
         </div>
       </div>
 

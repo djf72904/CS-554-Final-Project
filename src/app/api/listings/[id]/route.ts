@@ -17,7 +17,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const token = request.headers.get("Authorization")?.split("Bearer ")[1]
 
@@ -32,10 +32,6 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
     if (!existingListing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 })
-    }
-
-    if (existingListing.userId !== userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
     const data = await request.json()

@@ -48,17 +48,7 @@ export async function getUserProfile(userId: string): Promise<any | null> {
 
   const user = await User.findOne({ uid: userId })
   if(!user) return null
-  return {
-    uid: user.uid,
-    displayName: user.displayName,
-    email: user.email,
-    isEduEmail: user.isEduEmail,
-    school: user.school,
-    credits: user.credits,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt
-
-  }
+  return user
 }
 export async function getUserByEmail(userEmail: string): Promise<any | null> {
   await dbConnect()
