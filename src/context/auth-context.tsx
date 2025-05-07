@@ -75,6 +75,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+
+      if(!user?.email?.endsWith(".edu")){
+        setLoading(false)
+        return
+      }
+
       setUser(user)
 
       if (user) {

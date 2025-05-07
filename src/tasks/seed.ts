@@ -17,7 +17,6 @@ async function seedDatabase() {
             uid: "user-001",
             displayName: "Divya Prahlad",
             email: "dprahlad@stevens.edu",
-            isEduEmail: true,
             school: "Stevens Institute of Technology",
             credits: 100,
         })
@@ -26,7 +25,6 @@ async function seedDatabase() {
             uid: "user-002",
             displayName: "Alyssa Castillo",
             email: "acastil4@stevens.edu",
-            isEduEmail: true,
             school: "Stevens Institute of Technology",
             credits: 50,
         })
@@ -35,7 +33,6 @@ async function seedDatabase() {
             uid: "user-003",
             displayName: "Jack Patterson",
             email: "jpatter2@stevens.edu",
-            isEduEmail: true,
             school: "Stevens Institute of Technology",
             credits: 500,
         })
@@ -44,7 +41,6 @@ async function seedDatabase() {
             uid: "user-004",
             displayName: "Dylan Faulhaber",
             email: "dfaulhab@stevens.edu",
-            isEduEmail: true,
             school: "Stevens Institute of Technology",
             credits: 275,
         })
