@@ -1,6 +1,6 @@
 import mongoose, { Schema, type Document } from "mongoose"
 
-export interface IListing extends Document {
+export interface MongoListingType extends Document {
   title: string
   description: string
   category: string
@@ -46,5 +46,5 @@ ListingSchema.pre("save", function (next) {
   next()
 })
 
-export default mongoose.models.Listing || mongoose.model<IListing>("Listing", ListingSchema)
+export default mongoose.models.Listing || mongoose.model<MongoListingType>("Listing", ListingSchema)
 

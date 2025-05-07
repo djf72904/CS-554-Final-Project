@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import {createUserProfile, getUserProfile, updateUserProfile} from "@/lib/user-service"
+import {createUserProfile, getUserProfile, updateUserProfile} from "@/lib/users"
 import { auth } from "@/lib/firebase-admin"
 
 export async function GET(request: NextRequest) {
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
   try {
     const token = request.headers.get("Authorization")?.split("Bearer ")[1]
 

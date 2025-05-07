@@ -1,8 +1,24 @@
 import mongoose, { Schema, type Document } from "mongoose"
 
-export interface ITransaction extends Document {
-  buyerId: string
-  sellerId: string
+export interface MongoTransactionType extends Document {
+  buyerId: string | mongoose.Types.ObjectId | {
+    uid: string
+    displayName: string | null
+    email: string | null
+    isEduEmail: boolean
+    school?: string
+    credits: number
+    rating: number
+  }
+  sellerId: string | mongoose.Types.ObjectId | {
+    uid: string
+    displayName: string | null
+    email: string | null
+    isEduEmail: boolean
+    school?: string
+    credits: number
+    rating: number
+  }
   listingId: mongoose.Types.ObjectId
   amount: number
   credits: number
@@ -29,6 +45,7 @@ const TransactionSchema: Schema = new Schema({
     default: "pending",
     index: true,
   },
+  review: { type: [String], default: [] },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 })
@@ -38,5 +55,5 @@ TransactionSchema.pre("save", function (next) {
   next()
 })
 
-export default mongoose.models.Transaction || mongoose.model<ITransaction>("Transaction", TransactionSchema)
+export default mongoose.models.Transaction || mongoose.model<MongoTransactionType>("Transaction", TransactionSchema)
 

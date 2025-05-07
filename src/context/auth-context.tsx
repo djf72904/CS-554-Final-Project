@@ -11,7 +11,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth"
 import { auth } from "@/lib/firebase"
-import { getUserProfile, getUserByEmail, type UserProfile } from "@/lib/user-service"
+import { getUserProfile, type UserProfile } from "@/lib/user-service"
 import { useRouter } from "next/navigation"
 import searchColleges from "@/lib/college";
 import type {User as FirebaseUser} from "@firebase/auth";
@@ -76,20 +76,43 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+
+      if(!user?.email?.endsWith(".edu")){
+        setLoading(false)
+        return
+      }
+
       setUser(user)
 
       if (user) {
+
+        const token = await user.getIdToken()
+
+        // Set the token in cookies
+        setCookie('auth-token', token, {
+          maxAge: 60 * 60, // 1 hour (matches Firebase token expiry)
+          path: '/',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict'
+        });
+
+
         if (user.email) {
           searchColleges.byDomain(user.email.split('@')[1]).then((res) => {
             setSchool(res[0].name)
           })
         } else {
+          deleteCookie('auth-token');
           setSchool('')
+        }
+
+        if(!user.email?.endsWith(".edu")) {
+          return;
         }
 
         try {
           await createUserProfile(user)
-          const profile = await getUserProfile(user.uid)
+          const profile = JSON.parse(await getUserProfile(user.uid))
           setUserProfile(profile)
         } catch (error) {
           console.error("Error fetching user profile:", error)
@@ -142,18 +165,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        userProfile,
-        loading,
-        signInWithGoogle,
-        signOut,
-        school: school,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider
+          value={{
+            user,
+            userProfile,
+            loading,
+            signInWithGoogle,
+            signOut,
+            school: school,
+          }}
+
+      >
+        {children}
+      </AuthContext.Provider>
   )
 }
 
