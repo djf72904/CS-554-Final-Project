@@ -29,8 +29,8 @@ export interface MongoTransactionType extends Document {
 }
 
 const TransactionSchema: Schema = new Schema({
-  buyerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-  sellerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  buyerId: { type: String, required: true, index: true },
+  sellerId: { type: String, required: true, index: true },
   listingId: { type: mongoose.Schema.Types.ObjectId, ref: "Listing", required: true },
   amount: { type: Number, required: true },
   credits: { type: Number, required: true },

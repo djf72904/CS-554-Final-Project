@@ -5,6 +5,8 @@ import PurchaseOptions from "@/app/items/_components/purchase-options";
 import {capitalizeFirstLetter} from "@/lib/text";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import {UserRating} from "@/app/items/_components/Rating";
+import {MongoUserType} from "@/models/User";
+import {MongoPaymentMethodsType} from "@/models/PaymentMethods";
 
 export const ListItem = ({
     user,
@@ -16,16 +18,15 @@ export const ListItem = ({
     user: any
     item: any
     isLiked: boolean
-    seller: any,
-    payment_methods: any
+    seller: MongoUserType,
+    payment_methods: MongoPaymentMethodsType[]
 }) => {
+
     return <div className="min-h-screen">
         <main className="container mx-auto px-4 py-6">
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-bold">{item.title}</h1>
-                <div className="flex items-center gap-4">
-                    <ListingItem jwt={user?.jwt!} item={item} isLiked={isLiked}/>
-                </div>
+                <ListingItem jwt={user?.jwt!} item={item} isLiked={isLiked}/>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -114,7 +115,7 @@ export const ListItem = ({
                                 </Avatar>
                                 <div>
                                     <h4 className="font-medium">{seller?.displayName || "User"}</h4>
-                                    <p className="text-gray-600">{capitalizeFirstLetter(seller?.school) || "Unknown"}</p>
+                                    <p className="text-gray-600">{capitalizeFirstLetter(seller?.school!) || "Unknown"}</p>
                                     <div className="flex items-center mt-1">
                                         <UserRating/>
                                     </div>

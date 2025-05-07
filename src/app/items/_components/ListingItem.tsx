@@ -4,6 +4,7 @@ import {Button} from "@/components/ui/button";
 import {Heart} from "lucide-react";
 import {useAuth} from "@/context/auth-context";
 import {useState} from "react";
+import NumberFlow from "@number-flow/react";
 
 export const ListingItem = ({item, isLiked, jwt}: {
     item: any,
@@ -14,7 +15,8 @@ export const ListingItem = ({item, isLiked, jwt}: {
 
     const [isSaved, setIsSaved] = useState(isLiked ?? false)
 
-    //TODO
+    const [likes, setLikes] = useState<number>(item.likes?.length ?? 0)
+
     const handleLikeUnlike = () => {
         const staticIsSaved = isSaved;
         setIsSaved((prevState) => !prevState)
@@ -66,6 +68,14 @@ export const ListingItem = ({item, isLiked, jwt}: {
         }
         updateProfileLike()
         updateListingLike()
+
+        if(isSaved){
+            setLikes(prev=>prev-1)
+        }
+        else{
+            setLikes(prev=>prev+1)
+        }
+
     }
 
 
@@ -75,10 +85,13 @@ export const ListingItem = ({item, isLiked, jwt}: {
         }
     }
 
-    return <Button variant="ghost" size="sm" className={`flex items-center gap-2`} onClick={handleLikeUnlike}>
+    return  <div className="flex items-center gap-4">
+        <NumberFlow value={likes}/>
+        <Button variant="ghost" size="sm" className={`flex items-center gap-2 bg-gray-100 hover:bg-gray-200`} onClick={handleLikeUnlike}>
         <Heart fill={getSavedColor()} className={"h-4 w-4"} />
         <span>{
             isSaved ? 'Saved' : 'Save'
         }</span>
     </Button>
+    </div>
 }

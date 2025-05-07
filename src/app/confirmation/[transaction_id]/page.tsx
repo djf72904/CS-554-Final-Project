@@ -1,15 +1,23 @@
 
-import {PurchaseConfirmation} from "@/app/confirmation/[transaction_id]/_components/PurchaseConfirmation";
 import {getTransaction} from "@/lib/transactions";
+import PurchaseConfirmation from "@/app/confirmation/[transaction_id]/_components/PurchaseConfirmation";
+import {notFound} from "next/navigation";
+import {getUserProfile} from "@/lib/users";
 
-export default function PurchaseConfirmationPage({
+export default async function PurchaseConfirmationPage({
     params,
                                                  }: {
     params: {
         transaction_id: string
     }
 }) {
-    const transaction = getTransaction(params.transaction_id)
 
-    return <PurchaseConfirmation transaction={transaction}/>
+    const transaction = JSON.parse(await getTransaction(params.transaction_id) ?? "")
+    const seller = JSON.parse(await getUserProfile(transaction.sellerId))
+
+    if(!transaction){
+        return notFound()
+    }
+
+    return <PurchaseConfirmation transaction={transaction} seller={seller}/>
 }
