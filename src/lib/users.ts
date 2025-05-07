@@ -1,9 +1,9 @@
 'use server'
 
 import dbConnect from "./mongoose"
-import User, { type IUser } from "@/models/User"
+import User, { type MongoUserType } from "@/models/User"
 
-export type UserProfile = Omit<IUser, "_id" | "__v">
+export type UserProfile = Omit<MongoUserType, "_id" | "__v">
 
 
 export async function createUserProfile(user: any): Promise<any> {
@@ -19,11 +19,11 @@ export async function createUserProfile(user: any): Promise<any> {
       uid: user.uid,
       displayName: user.displayName,
       email: user.email,
-      isEduEmail: user.email?.endsWith(".edu") || false,
+      isEduEmail: user.email?.endsWith(".edu"),
       school: school,
       credits: 0,
       rating: 0,
-      reviews: [],
+      balance: 0,
     })
 
     userProfile = await newUser.save()
@@ -48,24 +48,14 @@ export async function getUserProfile(userId: string): Promise<any | null> {
 
   const user = await User.findOne({ uid: userId })
   if(!user) return null
-  return user
+  return JSON.stringify(user)
 }
 export async function getUserByEmail(userEmail: string): Promise<any | null> {
   await dbConnect()
 
   const user = await User.findOne({ email: userEmail })
   if(!user) return null
-  return {
-    uid: user.uid,
-    displayName: user.displayName,
-    email: user.email,
-    isEduEmail: user.isEduEmail,
-    school: user.school,
-    credits: user.credits,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt
-
-  }
+  return JSON.stringify(user)
 }
 
 export async function updateUserProfile(userId: string, data: Partial<UserProfile>): Promise<UserProfile | null> {

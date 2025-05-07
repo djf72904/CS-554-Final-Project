@@ -12,12 +12,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import {capitalizeFirstLetter} from "@/lib/text";
+import {useRouter} from "next/navigation";
 
 export default function ProfileContent() {
   const [activeTab, setActiveTab] = useState("listings")
   const { user, userProfile } = useAuth()
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
+
+  const router = useRouter()
 
   useEffect(() => {
     async function fetchListings() {
@@ -65,7 +68,9 @@ export default function ProfileContent() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full">
+          <Button className="w-full" onClick={()=>{
+            router.push('/profile/edit')
+          }}>
             <Edit className="mr-2 h-4 w-4" /> Edit Profile
           </Button>
         </CardFooter>
@@ -106,7 +111,7 @@ export default function ProfileContent() {
               <div className="flex justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
               </div>
-            ) : listings.length > 0 ? (
+            ) :
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {listings.map((item: any) => (
                   <Card key={item._id} className="group bg-gray-100 rounded-xl shadow-sm ">
@@ -134,7 +139,11 @@ export default function ProfileContent() {
                       </p>
                     </CardContent>
                     <CardFooter className="p-4 pt-0">
-                      <Link href={`/items/${item._id}`} className="w-full">
+                      <Link href={
+                        item.status === "active"
+                            ? `/items/${item._id}/edit`
+                            : `/items/${item._id}`
+                      } className="w-full">
                         <Button variant="outline" className="w-full">
                           {item.status === "active" ? "Edit Listing" : "View Details"}
                         </Button>
@@ -143,14 +152,7 @@ export default function ProfileContent() {
                   </Card>
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">You haven't listed any items yet.</p>
-                <Link href="/list-item">
-                  <Button>List Your First Item</Button>
-                </Link>
-              </div>
-            )}
+            }
           </TabsContent>
           <TabsContent value="purchases">
             <div className="text-center text-muted-foreground py-8">

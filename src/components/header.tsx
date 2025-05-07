@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import {Globe, Menu, Search, LogOut, PlusCircle, User, ShoppingCart} from "lucide-react"
+import {Globe, Menu, Search, LogOut, PlusCircle, User, ShoppingCart, Edit} from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 
 import { Button } from "@/components/ui/button"
@@ -70,11 +70,18 @@ export default function Header() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/profile/edit" className="cursor-pointer flex w-full items-center">
+                      <Edit className="mr-2 h-4 w-4" />
+                      <span>Edit Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/list-item" className="cursor-pointer flex w-full items-center">
                       <PlusCircle className="mr-2 h-4 w-4" />
                       <span>List an Item</span>
                     </Link>
                   </DropdownMenuItem>
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />

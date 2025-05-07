@@ -15,7 +15,8 @@ export async function getCurrentUser() {
         return {
             id: decodedToken.uid,
             email: decodedToken.email,
-            jwt: token
+            name: decodedToken.name,
+            image: decodedToken.picture,
         }
     } catch (error) {
         console.error("Error verifying auth token:", error)

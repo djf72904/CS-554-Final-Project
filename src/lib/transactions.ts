@@ -1,10 +1,10 @@
 import mongoose from "mongoose"
 import dbConnect from "./mongoose"
-import Transaction, { type ITransaction } from "@/models/Transaction"
+import Transaction, { type MongoTransactionType } from "@/models/Transaction"
 import User from "@/models/User"
 import Listing from "@/models/Listing"
 
-export type TransactionData = Omit<ITransaction, "_id" | "__v">
+export type TransactionData = Omit<MongoTransactionType, "_id" | "__v">
 
 export async function createTransaction(
   data: Omit<TransactionData, "createdAt" | "updatedAt" | "status">,
@@ -137,7 +137,7 @@ export async function getTransaction(transactionId: string): Promise<Transaction
   await dbConnect()
 
   try {
-    const transaction = await Transaction.findById(transactionId).populate("listingId").lean()
+    const transaction = await Transaction.findById(transactionId).populate("listingId").populate("buyerId").populate("sellerId").lean()
 
     return transaction as unknown as TransactionData | null
   } catch (error) {

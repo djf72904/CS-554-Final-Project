@@ -7,6 +7,7 @@ import {Button} from "@/components/ui/button";
 import React, {useCallback, useState} from "react";
 import {searchListings} from "@/lib/server-actions";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {capitalizeFirstLetter} from "@/lib/text";
 
 export default function CategoryFilters({schools}: Readonly<{ schools: string[] }>) {
   const router = useRouter()
@@ -159,7 +160,7 @@ export default function CategoryFilters({schools}: Readonly<{ schools: string[] 
         <SelectContent>
           {
             schools?.map(school=>{
-             return <SelectItem key={school} value={school}>{school}</SelectItem>
+             return <SelectItem key={school} value={school}>{capitalizeFirstLetter(school)}</SelectItem>
             })
           }
         </SelectContent>

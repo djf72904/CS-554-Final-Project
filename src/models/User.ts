@@ -2,17 +2,20 @@
 
 import mongoose, { Schema, type Document } from "mongoose"
 
-export interface IUser extends Document {
+export interface MongoUserType extends Document {
   uid: string
   displayName: string | null
   email: string | null
   school?: string
+  // School credit balance
   credits: number
   rating: number
   createdAt: Date
   updatedAt: Date
     likedPosts: string[]
     reviews?: string[]
+  // Cash balance
+  balance: number
 }
 
 const UserSchema: Schema = new Schema({
@@ -25,7 +28,6 @@ const UserSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   likedPosts: { type: [String], default: [] },
-    reviews: { type: [String], default: [] },
 })
 
 UserSchema.pre("save", function (next) {
@@ -35,4 +37,4 @@ UserSchema.pre("save", function (next) {
 })
 
 
-export default mongoose?.models?.User || mongoose.model<IUser>("User", UserSchema)
+export default mongoose?.models?.User || mongoose.model<MongoUserType>("User", UserSchema)

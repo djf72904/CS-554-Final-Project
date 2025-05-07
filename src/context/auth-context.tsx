@@ -112,7 +112,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         try {
           await createUserProfile(user)
-          const profile = await getUserProfile(user.uid)
+          const profile = JSON.parse(await getUserProfile(user.uid))
           setUserProfile(profile)
         } catch (error) {
           console.error("Error fetching user profile:", error)
@@ -174,6 +174,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             signOut,
             school: school,
           }}
+
       >
         {children}
       </AuthContext.Provider>

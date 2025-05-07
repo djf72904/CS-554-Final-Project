@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/auth-context"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,15 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
+import { format } from "date-fns"
+import {Separator} from "@radix-ui/react-menu";
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
+import {CreditCard, Wallet, X} from "lucide-react"
+import {Label} from "@/components/ui/label";
+import {Input} from "@/components/ui/input";
+import {createPaymentMethod} from "@/lib/payment-methods";
+import {toast, useToast} from "@/hooks/use-toast";
+import {MongoPaymentMethodsType} from "@/models/PaymentMethods";
 
 interface PurchaseOptionsProps {
   item: {
@@ -25,13 +34,24 @@ interface PurchaseOptionsProps {
     pickup_location: string
   }
   seller: any
+    pm: MongoPaymentMethodsType[]
 }
 
-export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
+export default function PurchaseOptions({ item, pm }: Readonly<PurchaseOptionsProps>) {
     const router = useRouter()
     const { user, userProfile } = useAuth()
     const [isLoading, setIsLoading] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [isProcessing, setIsProcessing] = useState(false)
+    const [paymentMethod, setPaymentMethod] = useState<"card" | "credit">("card")
+    const [cardForm, setCardForm] = useState({
+        cardNumber: "",
+        cardName: "",
+        expiryDate: "",
+        cvv: "",
+    })
+    const [saveCardInfo, setSaveCardInfo] = useState(false)
+    const [userPaymentMethod, setUserPaymentMethod] = useState<MongoPaymentMethodsType | null>(null)
 
   const handlePurchase = async (paymentMethod: "cash" | "credit") => {
     if (!user) {
@@ -50,31 +70,292 @@ export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
     }
   }
 
+    const handleCardInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setCardForm((prev) => ({ ...prev, [name]: value }))
+    }
+
+    const isVisaCard = () => {
+        const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
+        return cardNumber.startsWith("4") && cardNumber.length === 16
+    }
+
+    const isMasterCard = () => {
+        const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
+        return cardNumber.startsWith("5") && cardNumber.length === 16
+    }
+
+    const isAmexCard = () => {
+        const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
+        return cardNumber.startsWith("3") && (cardNumber.length === 15 || cardNumber.length === 16)
+    }
+
+    const validateCardInfo = () => {
+        const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
+        const expiryDate = cardForm.expiryDate.split("/").map(Number)
+        const currentDate = new Date()
+        const currentMonth = currentDate.getMonth() + 1
+        const currentYear = currentDate.getFullYear() % 100
+
+        if (cardNumber.length < 16 || !/^\d+$/.test(cardNumber)) {
+            return false
+        }
+
+        if (expiryDate[0] < currentMonth || (expiryDate[0] === currentMonth && expiryDate[1] < currentYear)) {
+            return false
+        }
+
+        if (cardForm.cvv.length < 3 || !/^\d+$/.test(cardForm.cvv)) {
+            return false
+        }
+
+        return true
+    }
+
   const isOwnListing = user?.uid === item.userId
+
+    const handleSubmit = async () => {
+        setIsProcessing(true)
+        setIsDialogOpen(false)
+
+        try {
+            if(saveCardInfo){
+                await fetch(
+                    "/api/payment-methods",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            data: {
+                            cardNumber: cardForm.cardNumber,
+                            expirationDate: cardForm.expiryDate,
+                            billingName: cardForm.cardName,
+                            cvv: cardForm.cvv,
+                            userId: user?.uid!,
+                            createdAt: new Date()
+                        }}),
+                    }
+                )
+            }
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "There was an error processing your payment. Please try again.",
+                variant: "destructive",
+            })
+        } finally {
+            setIsProcessing(false)
+        }
+    }
 
   return (
       <div className="border rounded-xl p-6 shadow-sm">
         {/* Dialog for purchase completion */}
-        <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
-            <DialogContent>
-                <DialogHeader>
-                <DialogTitle>Purchase Completed</DialogTitle>
-                <DialogDescription>
-                {/*  Item details and pickup location and date*/}
-                <div className="text-sm text-gray-500">
-                    <p className="font-semibold">{item.title}</p>
-                    <p>Pickup Date: {item.pickup_date}</p>
-                    <p>Pickup Location: {item.pickup_location}</p>
-                </div>
-                </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                <Button variant="secondary" onClick={() => router.push("/profile")}>
-                    Close
-                </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                      <DialogTitle>Complete your purchase</DialogTitle>
+                      <DialogDescription>Choose your payment method and complete your purchase.</DialogDescription>
+                  </DialogHeader>
+
+                  <div className="py-4">
+                      <div className="mb-4 p-3 bg-muted rounded-md">
+                          <h3 className="font-medium text-sm">Purchase Summary</h3>
+                          <p className="text-sm">{item.title}</p>
+                          {item.pickup_date && (
+                              <p className="text-xs text-muted-foreground">
+                                  Pickup: {format(new Date(item.pickup_date), "MMM d, yyyy")}
+                              </p>
+                          )}
+                          {item.pickup_location && <p className="text-xs text-muted-foreground">Location: {item.pickup_location}</p>}
+                          <Separator className="my-2" />
+                          <div className="flex justify-between text-sm">
+                              <span>Total:</span>
+                              <span className="font-medium">${item.price}</span>
+                          </div>
+                      </div>
+
+                      <Tabs
+                          defaultValue="card"
+                          value={paymentMethod}
+                          onValueChange={(value) => setPaymentMethod(value as "card" | "credit")}
+                      >
+                          <TabsList className="grid w-full grid-cols-2">
+                              <TabsTrigger value="card" className="flex items-center gap-2"
+                                           disabled={(userProfile?.balance || 0) < item.price}
+                              >
+                                  <CreditCard className="h-4 w-4" />
+                                  <span>Card</span>
+                              </TabsTrigger>
+                              <TabsTrigger
+                                  value="credit"
+                                  className="flex items-center gap-2"
+                                  disabled={(userProfile?.credits || 0) < item.credits}
+                              >
+                                  <Wallet className="h-4 w-4" />
+                                  <span>Campus Credits</span>
+                              </TabsTrigger>
+                          </TabsList>
+
+                          <TabsContent value="card" className="space-y-4 mt-4">
+                              <div>
+                                  {
+                                      pm.map(paymentMethods=>{
+                                            return (
+                                                <div key={paymentMethods._id as string} className="flex items-center justify-between p-2 border rounded-md mb-2">
+                                                    <div>
+                                                        <h3 className="font-medium">{paymentMethods.billingName}</h3>
+                                                        <p className="text-sm text-muted-foreground">{paymentMethods.cardNumber}</p>
+                                                    </div>
+                                                    {
+                                                        userPaymentMethod?._id === paymentMethods._id ? (
+                                                            <button onClick={()=>{
+                                                                setUserPaymentMethod(null)
+                                                            }} className={'flex space-x-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 px-2 py-1 rounded-full'}>
+                                                                <p className={'text-xs'}>Selected</p>
+                                                                <X className={'w-4 h-4'}/>
+                                                            </button>
+                                                        ) : (
+                                                            <Button variant="outline" size="sm" onClick={() => setUserPaymentMethod(paymentMethods)}>
+                                                                Use this card
+                                                            </Button>
+                                                        )
+                                                    }
+
+                                                </div>
+                                            )
+                                      })
+                                  }
+                              </div>
+                              {
+                                  !userPaymentMethod && <>
+                                      <div className="space-y-2">
+                                          <Label htmlFor="cardNumber">Card Number</Label>
+                                          <Input
+                                              id="cardNumber"
+                                              name="cardNumber"
+                                              placeholder="1234 5678 9012 3456"
+                                              value={cardForm.cardNumber}
+                                              onChange={handleCardInputChange}
+                                              maxLength={19}
+                                          />
+                                      </div>
+
+                                      <div className="space-y-2">
+                                          <Label htmlFor="cardName">Cardholder Name</Label>
+                                          <Input
+                                              id="cardName"
+                                              name="cardName"
+                                              placeholder="John Doe"
+                                              value={cardForm.cardName}
+                                              onChange={handleCardInputChange}
+                                          />
+                                      </div>
+
+                                      <div className="grid grid-cols-2 gap-4">
+                                          <div className="space-y-2">
+                                              <Label htmlFor="expiryDate">Expiry Date</Label>
+                                              <Input
+                                                  id="expiryDate"
+                                                  name="expiryDate"
+                                                  placeholder="MM/YY"
+                                                  value={cardForm.expiryDate}
+                                                  onChange={handleCardInputChange}
+                                                  maxLength={5}
+                                              />
+                                          </div>
+
+                                          <div className="space-y-2">
+                                              <Label htmlFor="cvv">CVV</Label>
+                                              <Input
+                                                  id="cvv"
+                                                  name="cvv"
+                                                  placeholder="123"
+                                                  value={cardForm.cvv}
+                                                  onChange={handleCardInputChange}
+                                                  maxLength={4}
+                                                  type="password"
+                                              />
+                                          </div>
+                                      </div>
+                                  </>
+                              }
+
+
+                              <p className="text-xs text-muted-foreground">
+                                  Your card information is encrypted and secure. We do not store your full card details.
+                              </p>
+                              {/* Save payment info */}
+                              {
+                                  !userPaymentMethod &&
+                                <div className="flex items-center space-x-2">
+                                    <input type="checkbox" id="savePayment" onChange={
+                                        (e) => setSaveCardInfo(e.target.checked)
+                                    } />
+                                    <label htmlFor="savePayment" className="text-xs text-muted-foreground">
+                                            Save this payment method for future purchases
+                                        </label>
+
+                                </div>
+                              }
+                              {(userProfile?.balance || 0) < item.price && (
+                                  <p className="mt-2 text-sm text-destructive">Insufficient Balance</p>
+                              )}
+                          </TabsContent>
+
+                          <TabsContent value="credit" className="mt-4">
+                              <div className="p-4 border rounded-md">
+                                  <div className="flex justify-between items-center mb-4">
+                                      <div>
+                                          <h3 className="font-medium">Campus Credits</h3>
+                                          <p className="text-sm text-muted-foreground">Pay using your campus credit balance</p>
+                                      </div>
+                                      <div className="text-right">
+                                          <p className="font-medium">{userProfile?.credits || 0} credits</p>
+                                          <p className="text-xs text-muted-foreground">Your balance</p>
+                                      </div>
+                                  </div>
+
+                                  <Separator />
+
+                                  <div className="mt-4 flex justify-between items-center">
+                                      <span>Cost:</span>
+                                      <span className="font-medium">{item.credits} credits</span>
+                                  </div>
+
+                                  <div className="mt-2 flex justify-between items-center">
+                                      <span>Remaining balance:</span>
+                                      <span className="font-medium">{Math.max(0, (userProfile?.credits || 0) - item.credits)} credits</span>
+                                  </div>
+
+                                  {(userProfile?.credits || 0) < item.credits && (
+                                      <p className="mt-2 text-sm text-destructive">You don't have enough credits for this purchase.</p>
+                                  )}
+                              </div>
+                          </TabsContent>
+                      </Tabs>
+                  </div>
+
+                  <DialogFooter className="flex flex-col sm:flex-row gap-2">
+                      <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isProcessing}>
+                          Cancel
+                      </Button>
+                      <Button
+                          onClick={handleSubmit}
+                          disabled={isProcessing || (paymentMethod === "credit" && (userProfile?.credits || 0) < item.credits)
+                              || (paymentMethod === "card" && (userProfile?.balance || 0) < item.price)
+                              || (paymentMethod === "card" && !validateCardInfo())
+                          }
+                      >
+                          {isProcessing
+                              ? "Processing..."
+                              : `Pay ${paymentMethod === "card" ? "$" + item.price : item.credits + " credits"}`}
+                      </Button>
+                  </DialogFooter>
+              </DialogContent>
+          </Dialog>
         <div className="flex items-baseline justify-between">
           <div className="text-2xl font-bold">${item.price}</div>
           <div className="text-gray-600">or {item.credits} credits</div>
@@ -102,21 +383,9 @@ export default function PurchaseOptions({ item }: PurchaseOptionsProps) {
                 This is your listing
               </Button>
           ) : (
-              <>
                 <Button className="w-full" size="lg" onClick={() => handlePurchase("cash")} disabled={isLoading}>
-                  Purchase with cash
+                  Purchase
                 </Button>
-                <Button
-                    className="w-full mt-2"
-                    variant="outline"
-                    size="lg"
-                    onClick={() => handlePurchase("credit")}
-                    disabled={isLoading || (userProfile?.credits || 0) < item.credits}
-                >
-                  Purchase with credits
-                  {(userProfile?.credits || 0) < item.credits && " (insufficient credits)"}
-                </Button>
-              </>
           )}
         </div>
         <div className="mt-6 border-t pt-6">

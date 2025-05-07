@@ -1,7 +1,7 @@
 import dbConnect from "./mongoose"
-import Listing, { type IListing } from "@/models/Listing"
+import Listing, { type MongoListingType } from "@/models/Listing"
 
-export type ListingData = Omit<IListing, "_id" | "__v">
+export type ListingData = Omit<MongoListingType, "_id" | "__v">
 
 export async function createListing(
   data: Omit<ListingData, "createdAt" | "updatedAt" | "status">,
