@@ -19,11 +19,11 @@ export async function createUserProfile(user: any): Promise<any> {
       uid: user.uid,
       displayName: user.displayName,
       email: user.email,
-      isEduEmail: user.email?.endsWith(".edu"),
       school: school,
       credits: 0,
       rating: 0,
       balance: 0,
+      likedPosts: []
     })
 
     userProfile = await newUser.save()
@@ -33,13 +33,13 @@ export async function createUserProfile(user: any): Promise<any> {
     uid: userProfile.uid,
     displayName: userProfile.displayName,
     email: userProfile.email,
-    isEduEmail: userProfile.isEduEmail,
     school: userProfile.school,
     credits: userProfile.credits,
     createdAt: userProfile.createdAt,
     updatedAt: userProfile.updatedAt,
     rating: userProfile.rating,
     reviews: userProfile.reviews,
+    likedPosts: userProfile.likedPosts
   }
 }
 

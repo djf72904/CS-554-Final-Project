@@ -12,8 +12,7 @@ export interface MongoUserType extends Document {
   rating: number
   createdAt: Date
   updatedAt: Date
-    likedPosts: string[]
-    reviews?: string[]
+  likedPosts: string[]
   // Cash balance
   balance: number
 }

@@ -1,3 +1,5 @@
-export default function MessagingPage () {
-    
+export default function MessagesList() {
+    return <div>
+
+    </div>
 }

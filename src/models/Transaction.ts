@@ -1,31 +1,19 @@
 import mongoose, { Schema, type Document } from "mongoose"
+import {MongoUserType} from "@/models/User";
+import {MongoListingType} from "@/models/Listing";
 
 export interface MongoTransactionType extends Document {
-  buyerId: string | mongoose.Types.ObjectId | {
-    uid: string
-    displayName: string | null
-    email: string | null
-    isEduEmail: boolean
-    school?: string
-    credits: number
-    rating: number
-  }
-  sellerId: string | mongoose.Types.ObjectId | {
-    uid: string
-    displayName: string | null
-    email: string | null
-    isEduEmail: boolean
-    school?: string
-    credits: number
-    rating: number
-  }
-  listingId: mongoose.Types.ObjectId
+  buyerId: string  | mongoose.Types.ObjectId | MongoUserType
+  sellerId: string | mongoose.Types.ObjectId | MongoUserType
+  listingId: mongoose.Types.ObjectId | MongoListingType
   amount: number
   credits: number
   paymentMethod: "cash" | "credit"
   status: "pending" | "completed" | "cancelled"
   createdAt: Date
   updatedAt: Date
+  rating: number
+  review: string
 }
 
 const TransactionSchema: Schema = new Schema({
@@ -46,6 +34,7 @@ const TransactionSchema: Schema = new Schema({
     index: true,
   },
   review: { type: [String], default: [] },
+  rating: {type: Number, default: 5},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 })
