@@ -27,7 +27,7 @@ export const ListingItem = ({item, isLiked, jwt}: {
                     "Authorization": `Bearer ${jwt}`
                 }
             });
-            const fullUserInfo = await getResponse.json()
+            const fullUserInfo = JSON.parse(await getResponse.json())
             if(staticIsSaved){
                 const removed = fullUserInfo.user.likedPosts.indexOf(item._id)
                 fullUserInfo.user.likedPosts.splice(removed, 1)
