@@ -58,6 +58,7 @@ export async function getUserByEmail(userEmail: string): Promise<any | null> {
   return JSON.stringify(user)
 }
 
+
 export async function updateUserProfile(userId: string, data: Partial<UserProfile>): Promise<UserProfile | null> {
   await dbConnect()
 
