@@ -1,7 +1,7 @@
 const amqp = require("amqplib")
 const mongoose = require("mongoose")
 const Message = require("../src/models/Message")
-
+const {createMessage} = require("../src/lib/messages")
 const MONGO_URI = "mongodb://localhost:27017/test"
 
 async function connectDB() {
@@ -28,7 +28,7 @@ async function start() {
             console.log("📨 Received message:", message)
 
             try {
-                await Message.create({
+                await createMessage({
                     text: message.text,
                     senderId: message.from,
                     receiverId: message.to,

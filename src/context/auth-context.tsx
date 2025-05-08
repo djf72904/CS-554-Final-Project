@@ -11,12 +11,11 @@ import {
   onAuthStateChanged,
 } from "firebase/auth"
 import { auth } from "@/lib/firebase"
-import { getUserProfile, type UserProfile } from "@/lib/user-service"
+import { getUserProfile, getUserByEmail, type UserProfile } from "@/lib/users"
 import { useRouter } from "next/navigation"
 import searchColleges from "@/lib/college";
 import type {User as FirebaseUser} from "@firebase/auth";
-import dbConnect from "@/lib/mongoose";
-import User from "@/models/User"
+import {deleteCookie, setCookie} from "cookies-next";
 
 
 async function createUserProfile(user: FirebaseUser): Promise<any> {
