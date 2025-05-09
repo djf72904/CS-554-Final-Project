@@ -24,7 +24,6 @@ export const Login = () => {
         )
     }
 
-
     return (<div className="container flex items-center justify-center min-h-[calc(100vh-80px)]">
         <Card className="w-full max-w-md">
             <CardHeader className="text-center">

@@ -8,7 +8,6 @@ import {notFound} from "next/navigation";
 import {getTransactionsByUser, TransactionData} from "@/lib/transactions";
 import {savedListingsByUser} from "@/lib/saved-listings";
 import {fetchReviewsForUser} from "@/lib/reviews";
-import {MongoUserType} from "@/models/User";
 
 export default async function ProfilePage() {
 

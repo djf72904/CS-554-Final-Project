@@ -136,12 +136,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (result.user.email?.endsWith(".edu")) {
         const profile = await getUserByEmail(result.user.email)
+        let newUser = false;
         if(!profile) {
+          newUser = true
           await createUserProfile(result.user)
         }
         const finalProfile = profile || await getUserByEmail(result.user.email)
         setUserProfile(finalProfile)
-        router.push("/")
+        router.push(newUser ? '/?newUser=true' : '/');
       } else {
         await firebaseSignOut(auth)
         alert("Please sign in with a .edu email address")

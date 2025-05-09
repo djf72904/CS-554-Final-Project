@@ -4,11 +4,11 @@ import ListingCard from "@/components/listing-card";
 import {useSearchParams} from "next/navigation";
 import {useEffect, useState} from "react";
 import {getListingsBySchool} from "@/lib/server-actions";
+import {Dialog, DialogContent, DialogDescription, DialogTitle} from "@/components/ui/dialog";
 
-export const HomeItemListings = ({base_listings}: {base_listings: any}) => {
-
-
+export const HomeItemListings = ({base_listings, new_user}: {base_listings: any, new_user: boolean}) => {
     const [listings, setListings] = useState<any>(base_listings)
+    const [welcomeDialog, setWelcomeDialog] = useState<boolean>(new_user)
 
 
     const searchParams = useSearchParams()
@@ -36,10 +36,23 @@ export const HomeItemListings = ({base_listings}: {base_listings: any}) => {
         })
     }, [searchParams]);
 
+    useEffect(() => {
+        setWelcomeDialog(new_user)
+    }, [new_user]);
 
 
 
     return  <div className="min-h-screen">
+        <Dialog open={welcomeDialog} onOpenChange={setWelcomeDialog}>
+            <DialogContent>
+                <DialogTitle>
+                    Welcome
+                </DialogTitle>
+                <DialogDescription>
+                    Welcome to Campus Bazaar. As a reward for joining here is 1000 credits as well as $1000 to start spending on our marketplace. Enjoy!
+                </DialogDescription>
+            </DialogContent>
+        </Dialog>
         <div className="container mx-auto px-4 py-4">
             <CategoryFilters schools={Array.from(new Set(base_listings.map((listing: any)=>{
                 return listing.school

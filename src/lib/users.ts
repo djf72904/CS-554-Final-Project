@@ -20,9 +20,9 @@ export async function createUserProfile(user: any): Promise<any> {
       displayName: user.displayName,
       email: user.email,
       school: school,
-      credits: 0,
+      credits: 1000,
       rating: 0,
-      balance: 0,
+      balance: 1000,
       likedPosts: []
     })
 
