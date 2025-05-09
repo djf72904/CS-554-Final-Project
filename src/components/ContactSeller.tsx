@@ -1,11 +1,13 @@
-// components/ContactSeller.tsx
 "use client"
 
 import { useAuth } from "@/context/auth-context"
 import { Button } from "@/components/ui/button"
+import {useRouter} from "next/navigation";
+import {createMessage} from "@/lib/messages";
 
-export default function ContactSeller({ sellerId }: { sellerId: string }) {
+export default function ContactSeller({ sellerId }: Readonly<{ sellerId: string }>) {
     const { user } = useAuth()
+    const router = useRouter()
 
     const handleClick = async () => {
         if (!user) return alert("Please log in to message the seller")
@@ -23,7 +25,14 @@ export default function ContactSeller({ sellerId }: { sellerId: string }) {
             }),
         })
 
-        alert("Message sent!")
+        await createMessage({
+            text: "Hi! I'm interested in your listing.",
+            senderId: user.uid,
+            receiverId:sellerId,
+        })
+
+        router.push(`/messages`)
+
     }
 
     return (

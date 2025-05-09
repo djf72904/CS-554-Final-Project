@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import User from "../models/User"
-import Listing from "../models/Listing"
+import User from "@/models/User"
+import Listing from "@/models/Listing"
 
 async function seedDatabase() {
     try {

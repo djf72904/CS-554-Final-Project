@@ -5,7 +5,7 @@ import {ProfileSkeleton} from "@/app/profile/_components/ProfileSkeleton";
 import {getListingById} from "@/lib/server-actions";
 import {getCurrentUser} from "@/lib/auth";
 import {notFound} from "next/navigation";
-import {getTransactionsByUser} from "@/lib/transactions";
+import {getTransactionsByUser, TransactionData} from "@/lib/transactions";
 import {savedListingsByUser} from "@/lib/saved-listings";
 
 export default async function ProfilePage() {
@@ -16,9 +16,9 @@ export default async function ProfilePage() {
         return notFound()
     }
 
-    const listings = await getListingById(user?.id)
-    const transactions = await getTransactionsByUser(user?.id)
-    const savedPosts = (await savedListingsByUser(user?.id))
+    const listings = await getListingById(user?.id) ?? []
+    const transactions: TransactionData[] = JSON.parse(await getTransactionsByUser(user?.id)) ?? []
+    const savedPosts = JSON.parse(await savedListingsByUser(user?.id)) ?? []
 
 
   return (

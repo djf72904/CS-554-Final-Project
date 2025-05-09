@@ -12,8 +12,8 @@ export const savedListingsByUser = async (userId: string) => {
         throw new Error("No user found")
     }
 
-    const saved = Listing.find( { _id: { $in: user.likedPosts } } )
+    // const saved = Listing.find( { _id: { $in: user.likedPosts } } )
 
 
-    return ({...saved})
+    return JSON.stringify([])
 }

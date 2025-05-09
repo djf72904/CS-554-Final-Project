@@ -11,7 +11,7 @@ export const UserRating = () => {
             userProfile?.rating ? userProfile.rating.toFixed(1) : "N/A"
         }</span>
         {
-            Array.from({length: 3}).map((_, i) => (
+            Array.from({length: Math.floor(userProfile?.rating ?? 0)}).map((_, i) => (
                 <svg key={'star:' + i}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

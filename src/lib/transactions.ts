@@ -120,7 +120,7 @@ export async function cancelTransaction(transactionId: string): Promise<Transact
   }
 }
 
-export async function getTransactionsByUser(userId: string): Promise<TransactionData[]> {
+export async function getTransactionsByUser(userId: string): Promise<string> {
   await dbConnect()
 
   const transactions = await Transaction.find({
@@ -130,7 +130,7 @@ export async function getTransactionsByUser(userId: string): Promise<Transaction
     .populate("listingId")
     .lean()
 
-  return transactions as unknown as TransactionData[]
+  return JSON.stringify(transactions as unknown as TransactionData[])
 }
 
 export async function getTransaction(transactionId: string): Promise<string | null> {

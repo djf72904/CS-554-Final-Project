@@ -33,7 +33,7 @@ export function SellerRatingDialog({
                                        isOpen,
                                        onOpenChange,
                                        onRatingSubmitted,
-                                   }: SellerRatingDialogProps) {
+                                   }: Readonly<SellerRatingDialogProps>) {
     const router = useRouter()
     const { user } = useAuth()
     const { toast } = useToast()
