@@ -18,7 +18,6 @@ import type {User as FirebaseUser} from "@firebase/auth";
 import {deleteCookie, setCookie} from "cookies-next";
 
 
-
 async function createUserProfile(user: FirebaseUser): Promise<any> {
   try {
     const token = await user.getIdToken()

@@ -7,6 +7,7 @@ import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import {UserRating} from "@/app/items/_components/Rating";
 import {MongoUserType} from "@/models/User";
 import {MongoPaymentMethodsType} from "@/models/PaymentMethods";
+import ContactSeller from "@/components/ContactSeller";
 
 export const ListItem = ({
     user,
@@ -121,7 +122,7 @@ export const ListItem = ({
                                     </div>
                                 </div>
                             </div>
-                            <Button className="w-full mt-4">Contact Seller</Button>
+                            <ContactSeller sellerId={item.userId}/>
                         </div>
                     </div>
                 </div>
