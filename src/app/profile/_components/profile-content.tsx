@@ -16,15 +16,20 @@ import {useRouter} from "next/navigation";
 import {MongoTransactionType} from "@/models/Transaction";
 import ListingCard from "@/components/listing-card";
 import {MongoListingType} from "@/models/Listing";
+import {TransactionData} from "@/lib/reviews";
+import {Separator} from "@/components/ui/separator";
+import {MongoUserType} from "@/models/User";
 
 export default function ProfileContent({
     listings,
     transactions,
-                                         savedPosts
+                                         savedPosts,
+    reviews
                                        }: Readonly<{
   listings: any
   transactions: any
   savedPosts: any
+  reviews: any
 }>) {
   const [activeTab, setActiveTab] = useState("listings")
   const { user, userProfile } = useAuth()
@@ -91,7 +96,7 @@ export default function ProfileContent({
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="listings">My Listings</TabsTrigger>
             <TabsTrigger value="purchases">My Purchases</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
@@ -168,34 +173,45 @@ export default function ProfileContent({
             </div>
           </TabsContent>
           <TabsContent value="reviews">
-            <div className="text-center text-muted-foreground py-8">
+            <div className="text-left text-muted-foreground">
+              <p>Reviews from buyers</p>
               {
-                transactions?.length ?
-                    <div>{ transactions.filter((tx: MongoTransactionType)=>{
-                      return tx.sellerId === user?.uid
-                    }).map((tx: MongoTransactionType, i: number)=>(
-                        <div key={`ratings:${i}`}>
-                          <div className="flex items-center mt-2">
-                            {
-                              Array.from({length: tx.rating ?? 0}).map((_, i) => (
-                                  <svg
-                                      key={`rating:${i}`}
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 24 24"
-                                      fill="currentColor"
-                                      className="h-4 w-4 text-yellow-500"
-                                  >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-                                        clipRule="evenodd"
-                                    />
-                                  </svg>
-                              ))
-                            }
-                            <span className="ml-1 text-sm font-medium">{tx.rating ?? 0} stars</span>
-                            <span className="ml-1 text-xs text-gray-500"></span>
+                reviews?.length ?
+                    <div className={'flex flex-col space-y-4 mt-4'}>{ reviews.map((tx: any, i: number)=>(
+                        <div key={`ratings:${i}`} >
+                          <div className={'flex items-center space-x-2'}>
+                            <Avatar className="h-8 w-8">
+                              <AvatarFallback>{tx.buyer.displayName ? tx.buyer.displayName.charAt(0).toUpperCase() : "U"}</AvatarFallback>
+                            </Avatar>
+                            <p>{tx.buyer?.displayName}</p>
+                            <div className="flex items-center">
+                              {
+                                Array.from({length: tx.rating ?? 0}).map((_, i) => (
+                                    <svg
+                                        key={`rating:${i}`}
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        className="h-4 w-4 text-yellow-500"
+                                    >
+                                      <path
+                                          fillRule="evenodd"
+                                          d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                                          clipRule="evenodd"
+                                      />
+                                    </svg>
+                                ))
+                              }
+                              <span className="ml-1 text-sm font-medium">{tx.rating ?? 0} stars</span>
+                              <span className="ml-1 text-xs text-gray-500"></span>
+                            </div>
                           </div>
+                          <p className={'text-left mt-1'}>{
+                            tx.review
+                          }</p>
+
+                          <Separator/>
+
                         </div>
                     ))}
                     </div> :  <div className="text-center text-muted-foreground py-8">

@@ -64,20 +64,19 @@ export function SellerRatingDialog({
         setIsSubmitting(true)
 
         try {
-            // In a real app, you would call an API endpoint to submit the review
-            // For example:
-            // await fetch('/api/reviews', {
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify({
-            //     sellerId,
-            //     buyerId: user.uid,
-            //     transactionId,
-            //     rating,
-            //     review,
-            //     createdAt: new Date()
-            //   })
-            // })
+
+            const response = await fetch("/api/reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${await user.getIdToken()}`,
+                },
+                body: JSON.stringify({
+                    transactionId: transactionId,
+                    rating: rating,
+                    review: review
+                }),
+            })
 
 
             toast({
@@ -85,20 +84,15 @@ export function SellerRatingDialog({
                 description: "Thank you for your feedback!",
             })
 
-            // Reset form
             setRating(0)
             setReview("")
 
-            // Close dialog
             onOpenChange(false)
 
-            // Call the callback if provided
             if (onRatingSubmitted) {
                 onRatingSubmitted()
             }
 
-            // Optionally refresh the page or navigate
-            // router.refresh()
         } catch (error) {
             console.error("Error submitting review:", error)
             toast({

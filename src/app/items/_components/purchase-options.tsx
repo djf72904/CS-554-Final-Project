@@ -19,26 +19,35 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {CreditCard, Wallet, X} from "lucide-react"
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import {createPaymentMethod} from "@/lib/payment-methods";
-import {toast, useToast} from "@/hooks/use-toast";
+import {toast} from "@/hooks/use-toast";
 import {MongoPaymentMethodsType} from "@/models/PaymentMethods";
 import {cn} from "@/lib/utils";
+import {capitalizeFirstLetter} from "@/lib/text";
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import {UserRating} from "@/app/items/_components/Rating";
+import ContactSeller from "@/components/ContactSeller";
+import {DialogBody} from "next/dist/client/components/react-dev-overlay/ui/components/dialog";
 
 interface PurchaseOptionsProps {
   item: {
-    _id: string
-    title: string
-    price: number
-    credits: number
-    userId: string
-    pickup_date: string
-    pickup_location: string
+      _id: string
+      description: string
+      title: string
+      price: number
+      credits: number
+      userId: string
+      pickup_date: string
+      pickup_location: string
+      condition: string
+      category: string
+      createdAt: string
+      school: string
   }
   seller: any
     pm: MongoPaymentMethodsType[]
 }
 
-export default function PurchaseOptions({ item, pm }: Readonly<PurchaseOptionsProps>) {
+export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseOptionsProps>) {
     const router = useRouter()
     const { user, userProfile } = useAuth()
     const [isLoading, setIsLoading] = useState(false)
@@ -54,22 +63,7 @@ export default function PurchaseOptions({ item, pm }: Readonly<PurchaseOptionsPr
     const [saveCardInfo, setSaveCardInfo] = useState(false)
     const [userPaymentMethod, setUserPaymentMethod] = useState<MongoPaymentMethodsType | null>(null)
 
-  const handlePurchase = async (paymentMethod: "cash" | "credit") => {
-    if (!user) {
-      router.push("/login")
-      return
-    }
 
-    setIsLoading(true)
-
-    try {
-        setIsDialogOpen(true)
-    } catch (error) {
-      alert("There was an error processing your purchase. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
     const handleCardInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -140,6 +134,26 @@ export default function PurchaseOptions({ item, pm }: Readonly<PurchaseOptionsPr
                     }
                 )
             }
+
+            const res = await fetch(
+                "/api/purchase",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        buyerId: user?.uid,
+                        sellerId: seller?.uid,
+                        postId: item?._id,
+                        balance: item.credits,
+                        balanceType: paymentMethod
+                    }),
+                }
+            )
+
+            router.push(`/confirmation/${(await res.json()).transactionId}`)
+
         } catch (error) {
             toast({
                 title: "Error",
@@ -173,7 +187,6 @@ export default function PurchaseOptions({ item, pm }: Readonly<PurchaseOptionsPr
 
   return (
       <div className="border rounded-xl p-6 shadow-sm">
-        {/* Dialog for purchase completion */}
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogContent className="sm:max-w-md">
                   <DialogHeader>
@@ -389,7 +402,69 @@ export default function PurchaseOptions({ item, pm }: Readonly<PurchaseOptionsPr
                   </DialogFooter>
               </DialogContent>
           </Dialog>
-        <div className="flex items-baseline justify-between">
+          <div className="flex items-start justify-between border-b pb-6">
+              <div>
+                  <h2 className="text-xl font-semibold">
+                      {item.title} at {capitalizeFirstLetter(item.school)}
+                  </h2>
+                  <p className="text-gray-500">
+                      Condition: {item.condition} • Posted {new Date(item.createdAt).toLocaleDateString()}
+                  </p>
+              </div>
+              <Dialog>
+                  <DialogTrigger asChild>
+                      <Button>Seller Info</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                      <DialogTitle>Seller Information</DialogTitle>
+                      <DialogBody>
+                          <div>
+                              <div>
+                                  <h3 className="text-lg font-semibold mb-4"></h3>
+                                  <div className="flex items-center gap-4">
+                                      <Avatar className="h-16 w-16">
+                                          <AvatarFallback>{seller?.displayName?.charAt(0) || "U"}</AvatarFallback>
+                                      </Avatar>
+                                      <div>
+                                          <h4 className="font-medium">{seller?.displayName || "User"}</h4>
+                                          <p className="text-gray-600">{capitalizeFirstLetter(seller?.school!) || "Unknown"}</p>
+                                          <div className="flex items-center mt-1">
+                                              <UserRating/>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <ContactSeller sellerId={item.userId}/>
+                              </div>
+                          </div>
+                      </DialogBody>
+
+                  </DialogContent>
+              </Dialog>
+          </div>
+
+          <div className="py-6 border-b">
+              <h3 className="text-lg font-semibold mb-4">About this item</h3>
+              <p className="text-gray-700">{item.description}</p>
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                  <div>
+                      <h4 className="font-medium">Condition</h4>
+                      <p className="text-gray-600">{capitalizeFirstLetter(item.condition)}</p>
+                  </div>
+                  <div>
+                      <h4 className="font-medium">Category</h4>
+                      <p className="text-gray-600">{capitalizeFirstLetter(item.category)}</p>
+                  </div>
+                  <div>
+                      <h4 className="font-medium">School</h4>
+                      <p className="text-gray-600">{capitalizeFirstLetter(item.school)}</p>
+                  </div>
+                  <div>
+                      <h4 className="font-medium">Listed</h4>
+                      <p className="text-gray-600">{new Date(item.createdAt).toLocaleDateString()}</p>
+                  </div>
+              </div>
+          </div>
+        <div className="flex items-baseline justify-between mt-4">
           <div className="text-2xl font-bold">${item.price}</div>
           <div className="text-gray-600">or {item.credits} credits</div>
         </div>
@@ -416,7 +491,7 @@ export default function PurchaseOptions({ item, pm }: Readonly<PurchaseOptionsPr
                 This is your listing
               </Button>
           ) : (
-                <Button className="w-full" size="lg" onClick={() => handlePurchase("cash")} disabled={isLoading}>
+                <Button className="w-full" size="lg" onClick={() => setIsDialogOpen(true)} disabled={isLoading}>
                   Purchase
                 </Button>
           )}

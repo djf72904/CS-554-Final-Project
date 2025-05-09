@@ -4,15 +4,12 @@ import Transaction, { type MongoTransactionType } from "@/models/Transaction"
 import User from "@/models/User"
 import Listing from "@/models/Listing"
 
-export type TransactionData = Omit<MongoTransactionType, "_id" | "__v">
+export type TransactionData = MongoTransactionType
 
 export async function createTransaction(
-  data: Omit<TransactionData, "createdAt" | "updatedAt" | "status">,
+  data: Partial<TransactionData>,
 ): Promise<TransactionData> {
   await dbConnect()
-
-  const session = await mongoose.startSession()
-  session.startTransaction()
 
   try {
     const newTransaction = new Transaction({
@@ -20,23 +17,21 @@ export async function createTransaction(
       status: "pending",
     })
 
-    await newTransaction.save({ session })
+    await newTransaction.save()
 
     if (data.paymentMethod === "credit") {
-      await User.findOneAndUpdate({ uid: data.buyerId }, { $inc: { credits: -data.credits } }, { session })
-
-      await User.findOneAndUpdate({ uid: data.sellerId }, { $inc: { credits: data.credits } }, { session })
+      await User.findOneAndUpdate({ uid: data.buyerId }, { $inc: { credits: -data.credits! } })
+      await User.findOneAndUpdate({ uid: data.sellerId }, { $inc: { credits: data.credits! } })
+    }
+    else {
+      await User.findOneAndUpdate({ uid: data.buyerId }, { $inc: { credits: -data.amount! } })
+      await User.findOneAndUpdate({ uid: data.sellerId }, { $inc: { credits: data.amount! } })
     }
 
-    await Listing.findByIdAndUpdate(data.listingId, { $set: { status: "pending" } }, { session })
-
-    await session.commitTransaction()
-    session.endSession()
+    await Listing.findByIdAndUpdate(data.listingId, { $set: { status: "complete" } })
 
     return newTransaction.toObject() as unknown as TransactionData
   } catch (error) {
-    await session.abortTransaction()
-    session.endSession()
     console.error("Error creating transaction:", error)
     throw error
   }

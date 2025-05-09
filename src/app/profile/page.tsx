@@ -7,6 +7,8 @@ import {getCurrentUser} from "@/lib/auth";
 import {notFound} from "next/navigation";
 import {getTransactionsByUser, TransactionData} from "@/lib/transactions";
 import {savedListingsByUser} from "@/lib/saved-listings";
+import {fetchReviewsForUser} from "@/lib/reviews";
+import {MongoUserType} from "@/models/User";
 
 export default async function ProfilePage() {
 
@@ -19,13 +21,13 @@ export default async function ProfilePage() {
     const listings = await getListingById(user?.id) ?? []
     const transactions: TransactionData[] = JSON.parse(await getTransactionsByUser(user?.id)) ?? []
     const savedPosts = JSON.parse(await savedListingsByUser(user?.id)) ?? []
-
+    const reviews = JSON.parse(await fetchReviewsForUser(user?.id)) ?? []
 
   return (
     <ProtectedRoute>
       <div className="container mx-auto px-4 py-8">
         <Suspense fallback={<ProfileSkeleton />}>
-          <ProfileContent listings={listings} transactions={transactions} savedPosts={savedPosts} />
+          <ProfileContent reviews={reviews} listings={listings} transactions={transactions} savedPosts={savedPosts} />
         </Suspense>
       </div>
     </ProtectedRoute>

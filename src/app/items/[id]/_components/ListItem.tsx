@@ -68,63 +68,6 @@ export const ListItem = ({
 
                 <div className="md:sticky md:top-24 h-fit">
                     <PurchaseOptions item={item} seller={seller} pm={payment_methods} />
-                    <div className="mt-8">
-                        <div className="flex items-start justify-between border-b pb-6">
-                            <div>
-                                <h2 className="text-xl font-semibold">
-                                    {item.title} at {capitalizeFirstLetter(item.school)}
-                                </h2>
-                                <p className="text-gray-500">
-                                    Condition: {item.condition} • Posted {new Date(item.createdAt).toLocaleDateString()}
-                                </p>
-                            </div>
-                            <div className="flex items-center">
-                                <Avatar className="h-12 w-12 border-2 border-white">
-                                    <AvatarFallback>{seller?.displayName?.charAt(0) || "U"}</AvatarFallback>
-                                </Avatar>
-                            </div>
-                        </div>
-
-                        <div className="py-6 border-b">
-                            <h3 className="text-lg font-semibold mb-4">About this item</h3>
-                            <p className="text-gray-700">{item.description}</p>
-                            <div className="mt-4 grid grid-cols-2 gap-4">
-                                <div>
-                                    <h4 className="font-medium">Condition</h4>
-                                    <p className="text-gray-600">{capitalizeFirstLetter(item.condition)}</p>
-                                </div>
-                                <div>
-                                    <h4 className="font-medium">Category</h4>
-                                    <p className="text-gray-600">{capitalizeFirstLetter(item.category)}</p>
-                                </div>
-                                <div>
-                                    <h4 className="font-medium">School</h4>
-                                    <p className="text-gray-600">{capitalizeFirstLetter(item.school)}</p>
-                                </div>
-                                <div>
-                                    <h4 className="font-medium">Listed</h4>
-                                    <p className="text-gray-600">{new Date(item.createdAt).toLocaleDateString()}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="py-6">
-                            <h3 className="text-lg font-semibold mb-4">Seller information</h3>
-                            <div className="flex items-center gap-4">
-                                <Avatar className="h-16 w-16">
-                                    <AvatarFallback>{seller?.displayName?.charAt(0) || "U"}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <h4 className="font-medium">{seller?.displayName || "User"}</h4>
-                                    <p className="text-gray-600">{capitalizeFirstLetter(seller?.school!) || "Unknown"}</p>
-                                    <div className="flex items-center mt-1">
-                                        <UserRating/>
-                                    </div>
-                                </div>
-                            </div>
-                            <ContactSeller sellerId={item.userId}/>
-                        </div>
-                    </div>
                 </div>
             </div>
         </main>
