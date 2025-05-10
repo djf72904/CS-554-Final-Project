@@ -73,3 +73,18 @@ export async function updateUserProfile(userId: string, data: Partial<UserProfil
   return  user as unknown as UserProfile | null
 }
 
+export async function getSavedListingsFromUser(userId: string): Promise<any | null> {
+  await dbConnect()
+
+  const currUser = JSON.parse(await getUserProfile(userId))
+
+  const savedListings = currUser.likedPosts
+  if(savedListings.length < 1){
+    return null
+  }
+  else{
+    return JSON.stringify(savedListings)
+  }
+
+}
+

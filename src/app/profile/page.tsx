@@ -6,9 +6,9 @@ import {getListingById, getListingsByUserId} from "@/lib/server-actions";
 import {getCurrentUser} from "@/lib/auth";
 import {notFound} from "next/navigation";
 import {getTransactionsByUser, TransactionData} from "@/lib/transactions";
-import {savedListingsByUser} from "@/lib/saved-listings";
+import {convertListingsToObj} from "@/lib/saved-listings";
 import {fetchReviewsForUser} from "@/lib/reviews";
-import {getUserProfile} from "@/lib/users";
+import {getSavedListingsFromUser, getUserProfile} from "@/lib/users";
 
 export default async function ProfilePage() {
 
@@ -20,9 +20,11 @@ export default async function ProfilePage() {
 
     const listings = await getListingsByUserId(user?.id) ?? []
     const transactions: TransactionData[] = JSON.parse(await getTransactionsByUser(user?.id)) ?? []
-    const savedPosts = JSON.parse(await savedListingsByUser(user?.id)) ?? []
+    const savedPosts = JSON.parse(await convertListingsToObj(await getSavedListingsFromUser(user?.id))) ?? null
     const reviews = JSON.parse(await fetchReviewsForUser(user?.id)) ?? []
     const userProfile = JSON.parse(await getUserProfile(user.id)) ?? null
+
+    console.log(savedPosts)
 
   return (
     <ProtectedRoute>

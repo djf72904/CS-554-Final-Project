@@ -7,7 +7,7 @@ import {Graduate} from "next/dist/compiled/@next/font/dist/google";
 
 interface ListingCardProps {
   listing: {
-    _id: string
+    _id: any
     title: string
     price: number
     credits: number

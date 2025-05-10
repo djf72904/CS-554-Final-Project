@@ -238,11 +238,11 @@ export default function ProfileContent({
           <TabsContent value="saved">
 
               {
-                savedPosts.length ?
+                savedPosts?.length ?
                     <div>{ savedPosts.map((saved: MongoListingType, i: number)=>(
                       <div key={`saved_listing:${i}`}>
                         <ListingCard listing={{
-                          _id: (saved.id),
+                          _id: (saved._id),
                           credits: (saved.credits),
                           images: (saved.images),
                           school: (saved.school),

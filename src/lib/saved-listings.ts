@@ -1,19 +1,24 @@
-import dbConnect from "@/lib/mongoose";
-import PaymentMethods, {MongoPaymentMethodsType} from "@/models/PaymentMethods";
-import User, {MongoUserType} from "@/models/User";
-import Listing, {MongoListingType} from "@/models/Listing";
+import {getListing} from "@/lib/listings";
 
-export const savedListingsByUser = async (userId: string) => {
-    await dbConnect()
+export const convertListingsToObj = async (listingList: any) => {
+    let listingObjs = []
+    listingList = JSON.parse(listingList)
 
-    const user = await User.findOne({ uid: userId })
-
-    if(!user){
-        throw new Error("No user found")
+    if(listingList === null){
+        return listingList
     }
 
-    // const saved = Listing.find( { _id: { $in: user.likedPosts } } )
+    for(let i=0; i<listingList.length; i++){
+        const currListing = await getListing(listingList[i]);
 
+        if(!currListing){
+            throw new Error(`listing with id: ${listingList[i]} at index ${i} of likedListings not found`)
+        }
+        if(currListing.status === "active"){
+            listingObjs.push(await getListing(listingList[i]))
+        }
+    }
 
-    return JSON.stringify([])
+    return JSON.stringify(listingObjs)
+
 }
