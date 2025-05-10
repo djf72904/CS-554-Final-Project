@@ -31,9 +31,11 @@ export const HomeItemListings = ({base_listings, new_user}: {base_listings: any,
 
 
     useEffect(() => {
-        getListingsBySchoolFn().then(res=>{
-            setListings(res)
-        })
+        if (searchParams.get('school')) {
+            getListingsBySchoolFn().then(res => {
+                setListings(res)
+            })
+        }
     }, [searchParams]);
 
     useEffect(() => {
@@ -62,7 +64,7 @@ export const HomeItemListings = ({base_listings, new_user}: {base_listings: any,
                     if(!searchParams.get('category') || searchParams.get('category') === 'all') {
                         return listing
                     }
-                    return listing.category === searchParams.get('category')
+                    return listing.category.toLowerCase() === searchParams.get('category')
                 }).filter(searchFilter()).map((item: any) => (
                     <ListingCard key={item._id} listing={item} />
                 ))}
