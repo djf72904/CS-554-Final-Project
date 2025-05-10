@@ -65,20 +65,6 @@ export function SellerRatingDialog({
 
         try {
 
-            const response = await fetch("/api/reviews", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${await user.getIdToken()}`,
-                },
-                body: JSON.stringify({
-                    transactionId: transactionId,
-                    rating: rating,
-                    review: review
-                }),
-            })
-
-
             toast({
                 title: "Review submitted",
                 description: "Thank you for your feedback!",

@@ -143,6 +143,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         const finalProfile = profile || await getUserByEmail(result.user.email)
         setUserProfile(finalProfile)
+        console.log({newUser})
         router.push(newUser ? '/?newUser=true' : '/');
       } else {
         await firebaseSignOut(auth)

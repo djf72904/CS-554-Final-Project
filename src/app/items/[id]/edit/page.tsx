@@ -1,17 +1,14 @@
 import ProtectedRoute from "@/components/protected-route"
 import EditListItemForm from "@/components/edit-list-item-form";
-import {getCurrentUser} from "@/lib/auth";
+import {getListingById} from "@/lib/server-actions";
 
 export default async function EditListItemPage({
     params,
                                          }: {
-    params: { id: string }
+    params: any
 }) {
 
-
-    //TODO: get listing id from params
-    const data = null
-
+    const data = await getListingById((await params).id)
 
     return (
         <ProtectedRoute>

@@ -9,7 +9,7 @@ import { Camera, Loader2, X } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import { storage } from "@/lib/firebase"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { createListingAction } from "@/lib/server-actions"
+import {createListingAction, updateListingAction} from "@/lib/server-actions"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,47 +19,33 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/hooks/use-toast"
 import {imageDownloadUrls} from "@/app/list-item/_utils/photo-handler";
+import {MongoListingType} from "@/models/Listing";
+import {
+  AlertDialog, AlertDialogAction,
+  AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 
 export default function EditListItemForm({
     data
                                          }: {
-    data: any
+    data: MongoListingType
 }) {
-
-  //TODO: Prefill fields with data.<...> - Dylan
 
   const router = useRouter()
   const { user, userProfile } = useAuth()
-  const [images, setImages] = useState<File[]>([])
-  const [imageUrls, setImageUrls] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    category: "",
-    condition: "",
-    price: "",
-    credits: "",
-    pickup_location: "",
+    title: data.title,
+    description: data.description,
+    category: data.category,
+    condition: data.condition,
+    price: data.price.toString(),
+    credits: data.credits.toString(),
+    pickup_location: data.pickup_location,
   })
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files) {
-      const fileArray = Array.from(files)
-      setImages((prevImages) => [...prevImages, ...fileArray])
-
-      const newImageUrls = fileArray.map((file) => URL.createObjectURL(file))
-      setImageUrls((prevUrls) => [...prevUrls, ...newImageUrls])
-    }
-  }
-
-  const removeImage = (index: number) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index))
-
-    URL.revokeObjectURL(imageUrls[index])
-    setImageUrls((prevUrls) => prevUrls.filter((_, i) => i !== index))
-  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target
@@ -85,9 +71,8 @@ export default function EditListItemForm({
     setIsLoading(true)
 
     try {
-      const imgUrls = await imageDownloadUrls(images)
-
-      await createListingAction(
+      await updateListingAction(
+          data._id as string,
         {
           title: formData.title,
           description: formData.description,
@@ -95,8 +80,6 @@ export default function EditListItemForm({
           condition: formData.condition,
           price: Number.parseFloat(formData.price),
           credits: Number.parseInt(formData.credits),
-          images: imgUrls,
-          school: userProfile?.school || "",
           pickup_location: formData.pickup_location,
         },
         user.uid,
@@ -120,15 +103,45 @@ export default function EditListItemForm({
     }
   }
 
-  const handleDelete = async () => {}
+  const handleDelete = async () => {
+
+    const token = await user?.getIdToken()
+
+    await fetch("/api/listings", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    router.push("/profile?listing_deleted=true")
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className={'flex space-x-4 items-center justify-between w-full'}>
         <h1 className="text-3xl font-bold mb-6">Edit a listing</h1>
-        <Button onClick={handleDelete}>
-          Delete Listing
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button>
+              Delete Listing
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Listing</AlertDialogTitle>
+              <AlertDialogDescription>Are you sure you would like to delete this listing. This action is irreversible</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction>
+                <Button onClick={handleDelete}>
+                  Delete Listing
+                </Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -231,44 +244,16 @@ export default function EditListItemForm({
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label>Images</Label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {imageUrls.map((imageUrl, index) => (
-              <div key={index} className="relative aspect-square">
-                <Image
-                  src={imageUrl || "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"}
-                  alt={`Uploaded image ${index + 1}`}
-                  fill
-                  className="object-cover rounded-md"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-2 right-2"
-                  onClick={() => removeImage(index)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-            <label className="border-2 border-dashed border-gray-300 rounded-md aspect-square flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
-              <Camera className="h-8 w-8 text-gray-400" />
-              <span className="mt-2 text-sm text-gray-500">Add Image</span>
-              <Input type="file" className="hidden" accept="image/*" multiple onChange={handleImageUpload} />
-            </label>
-          </div>
-        </div>
+        <p>Images cannot be changed once created</p>
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Listing Item...
+              Saving Listing...
             </>
           ) : (
-            "List Item"
+            "Edit Listing"
           )}
         </Button>
       </form>

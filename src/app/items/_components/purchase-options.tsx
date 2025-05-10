@@ -226,7 +226,8 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                               <TabsTrigger
                                   value="credit"
                                   className="flex items-center gap-2"
-                                  disabled={(userProfile?.credits || 0) < item.credits}
+                                  //Checks if students are form same school and if not, credits are disabled, only payment method is card
+                                  disabled={(userProfile?.credits || 0) < item.credits || seller.email.split("@")[1] !== user?.email?.split("@")[1]}
                               >
                                   <Wallet className="h-4 w-4" />
                                   <span>Campus Credits</span>

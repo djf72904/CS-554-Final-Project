@@ -23,6 +23,7 @@ const UserSchema: Schema = new Schema({
   email: { type: String, default: null },
   school: { type: String, default: "" },
   credits: { type: Number, default: 0 },
+  balance: { type: Number, default: 0 },
   rating: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

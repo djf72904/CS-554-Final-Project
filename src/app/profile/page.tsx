@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import ProtectedRoute from "@/components/protected-route"
 import ProfileContent from "./_components/profile-content"
 import {ProfileSkeleton} from "@/app/profile/_components/ProfileSkeleton";
-import {getListingById} from "@/lib/server-actions";
+import {getListingById, getListingsByUserId} from "@/lib/server-actions";
 import {getCurrentUser} from "@/lib/auth";
 import {notFound} from "next/navigation";
 import {getTransactionsByUser, TransactionData} from "@/lib/transactions";
@@ -17,10 +17,11 @@ export default async function ProfilePage() {
         return notFound()
     }
 
-    const listings = await getListingById(user?.id) ?? []
+    const listings = await getListingsByUserId(user?.id) ?? []
     const transactions: TransactionData[] = JSON.parse(await getTransactionsByUser(user?.id)) ?? []
     const savedPosts = JSON.parse(await savedListingsByUser(user?.id)) ?? []
     const reviews = JSON.parse(await fetchReviewsForUser(user?.id)) ?? []
+
 
   return (
     <ProtectedRoute>

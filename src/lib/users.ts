@@ -37,6 +37,7 @@ export async function createUserProfile(user: any): Promise<any> {
     credits: userProfile.credits,
     createdAt: userProfile.createdAt,
     updatedAt: userProfile.updatedAt,
+    balance: userProfile.balance,
     rating: userProfile.rating,
     reviews: userProfile.reviews,
     likedPosts: userProfile.likedPosts
