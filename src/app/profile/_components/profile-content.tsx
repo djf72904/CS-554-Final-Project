@@ -24,15 +24,17 @@ export default function ProfileContent({
     listings,
     transactions,
                                          savedPosts,
-    reviews
+    reviews,
+                                        userProfile
                                        }: Readonly<{
   listings: any
   transactions: any
   savedPosts: any
   reviews: any
+  userProfile: any
 }>) {
   const [activeTab, setActiveTab] = useState("listings")
-  const { user, userProfile } = useAuth()
+  const {user} = useAuth()
 
   const router = useRouter()
 
@@ -42,10 +44,10 @@ export default function ProfileContent({
       <Card className="flex-1">
         <CardHeader className="flex flex-row items-center gap-4">
           <Avatar className="h-20 w-20">
-            <AvatarFallback>{user?.displayName ? user.displayName.charAt(0).toUpperCase() : "U"}</AvatarFallback>
+            <AvatarFallback>{userProfile?.displayName ? userProfile.displayName.charAt(0).toUpperCase() : "U"}</AvatarFallback>
           </Avatar>
           <div>
-            <CardTitle>{user?.displayName}</CardTitle>
+            <CardTitle>{userProfile?.displayName}</CardTitle>
             <CardDescription>{user?.email}</CardDescription>
           </div>
         </CardHeader>

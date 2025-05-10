@@ -5,6 +5,7 @@ import {getPaymentMethods} from "@/lib/payment-methods";
 import {getCurrentUser} from "@/lib/auth";
 import {notFound} from "next/navigation";
 import {MongoPaymentMethodsType} from "@/models/PaymentMethods";
+import {getUserProfile} from "@/lib/users";
 
 export default async function ProfileEditPage() {
 
@@ -14,8 +15,11 @@ export default async function ProfileEditPage() {
         return notFound()
     }
 
+    const currUserDisplayName = JSON.parse((await getUserProfile(user.id))).displayName;
+
     const payment_methods: MongoPaymentMethodsType[] = JSON.parse(await getPaymentMethods(user?.id))
 
 
-    return <ProfileEdit payment_methods={payment_methods}/>
+
+    return <ProfileEdit oldDisplayName={currUserDisplayName} payment_methods={payment_methods}/>
 }

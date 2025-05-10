@@ -34,8 +34,9 @@ import {format} from "date-fns";
 import {Separator} from "@radix-ui/react-menu";
 import {DialogBody} from "next/dist/client/components/react-dev-overlay/ui/components/dialog";
 
-export const ProfileEdit = ({payment_methods}: {
-    payment_methods: MongoPaymentMethodsType[]
+export const ProfileEdit = ({payment_methods, oldDisplayName}: {
+    payment_methods: MongoPaymentMethodsType[],
+    oldDisplayName?: string
 }) => {
     const router = useRouter()
     const { user, userProfile } = useAuth()
@@ -57,10 +58,10 @@ export const ProfileEdit = ({payment_methods}: {
     useEffect(() => {
         if (userProfile) {
             setFormData({
-                displayName: userProfile.displayName || "",
+                displayName: oldDisplayName || "",
             })
         }
-    }, [userProfile])
+    }, [oldDisplayName])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target
