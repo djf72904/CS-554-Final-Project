@@ -3,6 +3,7 @@ import dbConnect from "./mongoose"
 import Transaction, { type MongoTransactionType } from "@/models/Transaction"
 import User from "@/models/User"
 import Listing from "@/models/Listing"
+import {UserProfile} from "@/lib/users";
 
 export type TransactionData = MongoTransactionType
 
@@ -139,5 +140,18 @@ export async function getTransaction(transactionId: string): Promise<string | nu
     console.error("Error fetching transaction:", error)
     return null
   }
+}
+
+export async function updateTransaction(transactionId: string, data: Partial<TransactionData>): Promise<TransactionData | null> {
+  await dbConnect()
+
+  const updateData = {
+    ...data,
+    updatedAt: new Date(),
+  }
+
+  const transaction = await Transaction.findOneAndUpdate({_id: transactionId}, {$set: updateData}, {new: true}).lean()
+
+  return transaction as unknown as TransactionData | null
 }
 

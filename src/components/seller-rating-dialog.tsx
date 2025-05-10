@@ -23,7 +23,7 @@ interface SellerRatingDialogProps {
     transactionId: string
     isOpen: boolean
     onOpenChange: (open: boolean) => void
-    onRatingSubmitted?: () => void
+    onRatingSubmitted?: (rating: number, review: string) => void
 }
 
 export function SellerRatingDialog({
@@ -69,15 +69,21 @@ export function SellerRatingDialog({
                 title: "Review submitted",
                 description: "Thank you for your feedback!",
             })
-
-            setRating(0)
-            setReview("")
-
             onOpenChange(false)
 
-            if (onRatingSubmitted) {
-                onRatingSubmitted()
+            async function submitRating(rating: number, review: string){
+                const patchResponse = await fetch(`/api/purchase/${transactionId.toString()}`,
+                    {
+                        method: "PATCH",
+                        body: JSON.stringify({rating: rating, review: review}),
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    })
+                return await patchResponse.json()
             }
+
+            submitRating(rating, review)
 
         } catch (error) {
             console.error("Error submitting review:", error)
