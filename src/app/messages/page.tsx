@@ -19,6 +19,7 @@ interface User {
 
 // Updated message interface with new user structure
 interface Message {
+    read: boolean;
     text: string
     senderId: User
     receiverId: User
@@ -111,6 +112,7 @@ export default function MessagingPage() {
     const [newMessage, setNewMessage] = useState("")
     const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
     const [conversations, setConversations] = useState<Conversation[]>([])
+    const readConversations = useRef<Set<string>>(new Set())
 
     const wsRef = useRef<WebSocket | null>(null)
 
@@ -172,6 +174,13 @@ export default function MessagingPage() {
         }
     }, [user])
 
+    const messagesEndRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [messages])
+
+
     useEffect(() => {
         async function fetchMessages() {
             if (!user?.uid) return
@@ -211,14 +220,14 @@ export default function MessagingPage() {
                     participant,
                     lastMessage: message.text,
                     lastMessageDate: message.createdAt,
-                    unreadCount: isIncoming ? 1 : 0,
+                    unreadCount: isIncoming && !message.read ? 1 : 0,
                 })
             } else {
                 const existing = conversationMap.get(conversationId)!
                 if (new Date(message.createdAt) > new Date(existing.lastMessageDate)) {
                     existing.lastMessage = message.text
                     existing.lastMessageDate = message.createdAt
-                    if (isIncoming) {
+                    if (isIncoming && message.read) {
                         existing.unreadCount += 1
                     }
                 }
@@ -269,6 +278,7 @@ export default function MessagingPage() {
             receiverId: selectedParticipant,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
+            read: false
         }
 
         setMessages([...messages, newMsg])
@@ -317,7 +327,35 @@ export default function MessagingPage() {
                             className={`p-4 cursor-pointer hover:bg-muted/50 ${
                                 selectedConversation === conversation.id ? "bg-muted" : ""
                             }`}
-                            onClick={() => setSelectedConversation(conversation.id)}
+                            onClick={async () => {
+                                setSelectedConversation(conversation.id)
+
+                                // Clear unread count
+                                setConversations((prev) =>
+                                    prev.map((conv) =>
+                                        conv.id === conversation.id ? { ...conv, unreadCount: 0 } : conv
+                                    )
+                                )
+
+                                readConversations.current.add(conversation.id)
+
+                                try {
+                                    if(user) {
+                                        await fetch(`/api/messages/mark-read`, {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json",
+                                                Authorization: `Bearer ${await user.getIdToken()}`,
+                                            },
+                                            body: JSON.stringify({participantId: conversation.participant.uid}),
+                                        })
+                                    }
+                                } catch (err) {
+                                    console.error("Failed to mark messages as read:", err)
+                                }
+
+                            }}
+
                         >
                             <div className="flex items-center space-x-4">
                                 <Avatar className="h-12 w-12">
@@ -386,6 +424,7 @@ export default function MessagingPage() {
                                     <p className="text-muted-foreground">No messages yet</p>
                                 </div>
                             )}
+                            <div ref={messagesEndRef} />
                         </div>
 
                         {/* Message Input */}

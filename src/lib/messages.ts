@@ -9,6 +9,7 @@ export interface MessageType {
     text: string
     senderId: string
     receiverId: any
+    read: boolean
     createdAt: Date
     updatedAt: Date
 }
@@ -17,6 +18,7 @@ export async function createMessage(data: {
     text: string
     senderId: string
     receiverId: string
+    read: boolean
 }): Promise<MessageType | null> {
     await dbConnect()
 
@@ -25,6 +27,7 @@ export async function createMessage(data: {
             text: data.text,
             senderId: data.senderId,
             receiverId: data.receiverId,
+            read: data.read
         })
 
         return {
@@ -32,6 +35,7 @@ export async function createMessage(data: {
             text: newMessage.text,
             senderId: newMessage.senderId,
             receiverId: newMessage.receiverId,
+            read: newMessage.read,
             createdAt: newMessage.createdAt,
             updatedAt: newMessage.updatedAt,
         }
@@ -71,6 +75,7 @@ export async function getMessagesForUser(
                uid: receiver.uid,
                displayName: receiver.displayName
            },
+           read: msg.read,
            createdAt: msg.createdAt,
            updatedAt: msg.updatedAt,
        }
@@ -82,6 +87,7 @@ export async function getMessagesForUser(
             text: msg.text,
             senderId: msg.senderId,
             receiverId: msg.receiverId,
+            read: msg.read,
             createdAt: msg.createdAt,
             updatedAt: msg.updatedAt,
         }
@@ -108,6 +114,7 @@ export async function getMessagesBetweenUsers(
         text: msg.text,
         senderId: msg.senderId,
         receiverId: msg.receiverId,
+        read: msg.read,
         createdAt: msg.createdAt,
         updatedAt: msg.updatedAt,
     }))

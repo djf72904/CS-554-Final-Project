@@ -31,6 +31,7 @@ async function start() {
                     text: message.text,
                     senderId: message.from,
                     receiverId: message.to,
+                    read:  false
                 })
                 console.log("Message saved to DB")
             } catch (error) {
