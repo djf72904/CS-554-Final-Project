@@ -18,6 +18,10 @@ export const ListingItem = ({item, isLiked, jwt}: {
     const [likes, setLikes] = useState<number>(item.likes?.length ?? 0)
 
     const handleLikeUnlike = () => {
+        if(user?.uid === item.userId){
+            alert("Cannot like own listing")
+            return
+        }
         const staticIsSaved = isSaved;
         setIsSaved((prevState) => !prevState)
 
@@ -49,6 +53,7 @@ export const ListingItem = ({item, isLiked, jwt}: {
         }
 
         async function updateListingLike(){
+
             if(staticIsSaved){
                 const removed = item.likes.indexOf(user?.uid)
                 item.likes.splice(removed, 1)
