@@ -71,19 +71,6 @@ export default function EditListItemForm({
     setIsLoading(true)
 
     try {
-      await updateListingAction(
-          data._id as string,
-        {
-          title: formData.title,
-          description: formData.description,
-          category: formData.category,
-          condition: formData.condition,
-          price: Number.parseFloat(formData.price),
-          credits: Number.parseInt(formData.credits),
-          pickup_location: formData.pickup_location,
-        },
-        user.uid,
-      )
 
       toast({
         title: "Success!",
@@ -104,17 +91,6 @@ export default function EditListItemForm({
   }
 
   const handleDelete = async () => {
-
-    const token = await user?.getIdToken()
-
-    await fetch("/api/listings", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
-    });
-    router.push("/profile?listing_deleted=true")
   }
 
   return (
