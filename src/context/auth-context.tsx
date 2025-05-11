@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (user) {
 
-        const token = await user.getIdToken()
+        const token = await user.getIdToken(true)
 
         // Set the token in cookies
         setCookie('auth-token', token, {
