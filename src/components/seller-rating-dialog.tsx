@@ -75,7 +75,7 @@ export function SellerRatingDialog({
                 const patchResponse = await fetch(`/api/purchase/${transactionId.toString()}`,
                     {
                         method: "PATCH",
-                        body: JSON.stringify({rating: rating, review: review}),
+                        body: JSON.stringify({rating: rating, review: review.trim()}),
                         headers: {
                             "Content-Type": "application/json",
                         }

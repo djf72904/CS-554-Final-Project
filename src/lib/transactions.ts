@@ -155,3 +155,11 @@ export async function updateTransaction(transactionId: string, data: Partial<Tra
   return transaction as unknown as TransactionData | null
 }
 
+export async function getAllTransactions() : Promise<any | null> {
+  await dbConnect()
+
+  const transactions = await Transaction.find({})
+
+  return transactions as unknown as any | null
+}
+

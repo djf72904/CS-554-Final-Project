@@ -44,7 +44,7 @@ export async function createUserProfile(user: any): Promise<any> {
   }
 }
 
-export async function getUserProfile(userId: string): Promise<any | null> {
+export async function getUserProfile(userId: any): Promise<any | null> {
   await dbConnect()
 
   const user = await User.findOne({ uid: userId })
@@ -60,7 +60,7 @@ export async function getUserByEmail(userEmail: string): Promise<any | null> {
 }
 
 
-export async function updateUserProfile(userId: string, data: Partial<UserProfile>): Promise<UserProfile | null> {
+export async function updateUserProfile(userId: any, data: Partial<UserProfile>): Promise<UserProfile | null> {
   await dbConnect()
 
   const updateData = {
