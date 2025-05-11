@@ -85,7 +85,7 @@ export const ListingItem = ({item, isLiked, jwt}: {
 
 
     const getSavedColor = () => {
-        if (isSaved) {
+        if (isSaved && user !== null) {
             return 'red'
         }
     }
@@ -95,7 +95,7 @@ export const ListingItem = ({item, isLiked, jwt}: {
         <Button variant="ghost" size="sm" className={`flex items-center gap-2 bg-gray-100 hover:bg-gray-200`} onClick={handleLikeUnlike} disabled={user === null}>
         <Heart fill={getSavedColor()} className={"h-4 w-4"} />
         <span>{
-            isSaved ? 'Saved' : 'Save'
+            (isSaved && user !== null) ? 'Saved' : 'Save'
         }</span>
     </Button>
     </div>
