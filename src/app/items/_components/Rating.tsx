@@ -3,15 +3,14 @@
 import {useAuth} from "@/context/auth-context";
 import {Star} from "lucide-react";
 
-export const UserRating = () => {
-    const { userProfile } = useAuth()
+export const UserRating = ({seller}: Readonly<{ seller: any }>) => {
 
     return <div className={'flex space-x-2 items-center'}>
         <span className="ml-1 font-medium">{
-            userProfile?.rating ? userProfile.rating.toFixed(1) : "N/A"
+            seller?.rating ? seller.rating.toFixed(1) : "N/A"
         }</span>
         {
-            Array.from({length: Math.floor(userProfile?.rating ?? 0)}).map((_, i) => (
+            Array.from({length: Math.floor(seller?.rating ?? 0)}).map((_, i) => (
                 <svg key={'star:' + i}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

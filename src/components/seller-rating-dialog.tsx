@@ -23,7 +23,7 @@ interface SellerRatingDialogProps {
     transactionId: string
     isOpen: boolean
     onOpenChange: (open: boolean) => void
-    onRatingSubmitted?: (rating: number, review: string) => void
+    onRatingSubmitted: (rating: number) => void
 }
 
 export function SellerRatingDialog({
@@ -83,7 +83,8 @@ export function SellerRatingDialog({
                 return await patchResponse.json()
             }
 
-            submitRating(rating, review)
+            const updatedRating = (await submitRating(rating, review)).seller.rating
+            onRatingSubmitted(updatedRating)
 
         } catch (error) {
             console.error("Error submitting review:", error)

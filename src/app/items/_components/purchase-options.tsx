@@ -430,7 +430,7 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                                           <h4 className="font-medium">{seller?.displayName || "User"}</h4>
                                           <p className="text-gray-600">{capitalizeFirstLetter(seller?.school!) || "Unknown"}</p>
                                           <div className="flex items-center mt-1">
-                                              <UserRating/>
+                                              <UserRating seller={seller}/>
                                           </div>
                                       </div>
                                   </div>

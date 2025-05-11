@@ -17,6 +17,7 @@ import {useEffect, useState} from "react";
 export default function PurchaseConfirmation({transaction, seller}: Readonly<{ transaction: any, seller: any }>) {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [rating, setRating] = useState<number>(seller.rating)
 
     useEffect(()=>{
         setTimeout(()=>{
@@ -175,6 +176,7 @@ export default function PurchaseConfirmation({transaction, seller}: Readonly<{ t
                         transactionId={transaction._id}
                         isOpen={isDialogOpen}
                         onOpenChange={setIsDialogOpen}
+                        onRatingSubmitted={setRating}
                     />): null
                     }
                     <Card>
@@ -211,7 +213,7 @@ export default function PurchaseConfirmation({transaction, seller}: Readonly<{ t
 
                                     }
 
-                                    <span className="ml-1 text-sm font-medium">{seller.rating} stars</span>
+                                    <span className="ml-1 text-sm font-medium">{rating} stars</span>
                                     <span className="ml-1 text-xs text-gray-500"></span>
                                 </div>
                             </div>
