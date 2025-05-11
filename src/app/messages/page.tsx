@@ -189,6 +189,8 @@ export default function MessagingPage() {
                 setLoading(true)
                 const fetchedMessages = JSON.parse(await getMessagesForUser(user.uid))
                 //@ts-ignore
+                console.log({fetchedMessages})
+
                 setMessages(fetchedMessages)
                 setError(null)
             } catch (err) {
@@ -207,7 +209,6 @@ export default function MessagingPage() {
         if (!user?.uid) return
 
         const conversationMap = new Map<string, Conversation>()
-
 
         messages.forEach((message) => {
             const isIncoming = message.receiverId.uid === user.uid

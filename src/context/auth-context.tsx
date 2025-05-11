@@ -143,7 +143,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         const finalProfile = profile || await getUserByEmail(result.user.email)
         setUserProfile(finalProfile)
-        console.log({newUser})
         router.push(newUser ? '/?newUser=true' : '/');
       } else {
         await firebaseSignOut(auth)
@@ -159,10 +158,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     try {
       await firebaseSignOut(auth)
+
+      // Clear all local states and cookies
+      setUser(null)
       setUserProfile(null)
-      router.push("/login")
+      setSchool('')
+      deleteCookie('auth-token')
+      router.push('/login')
     } catch (error) {
-      console.error("Error signing out", error)
+      console.error('Error signing out', error)
     }
   }
 

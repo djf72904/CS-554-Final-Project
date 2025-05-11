@@ -24,7 +24,7 @@ export const Login = () => {
         )
     }
 
-    return (<div className="container flex items-center justify-center min-h-[calc(100vh-80px)]">
+    return (<div className=" flex items-center justify-center min-h-[calc(100vh-80px)] w-full">
         <Card className="w-full max-w-md">
             <CardHeader className="text-center">
                 <div className={'bg-rose-500 text-white p-2 w-fit rounded-md flex justify-center self-center align-super mb-2'}>

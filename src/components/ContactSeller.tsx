@@ -28,7 +28,8 @@ export default function ContactSeller({ sellerId }: Readonly<{ sellerId: string 
         await createMessage({
             text: "Hi! I'm interested in your listing.",
             senderId: user.uid,
-            receiverId:sellerId,
+            receiverId: sellerId,
+            read: false
         })
 
         router.push(`/messages`)
