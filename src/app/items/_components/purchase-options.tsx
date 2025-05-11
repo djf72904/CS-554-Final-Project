@@ -434,7 +434,9 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                                           </div>
                                       </div>
                                   </div>
-                                  <ContactSeller sellerId={item.userId}/>
+                                  {user === null ? null :
+                                      <ContactSeller sellerId={item.userId}/>
+                                  }
                               </div>
                           </div>
                       </DialogBody>
@@ -495,7 +497,7 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                 This is your listing
               </Button>
           ) : (
-                <Button className="w-full" size="lg" onClick={() => setIsDialogOpen(true)} disabled={isLoading}>
+                <Button className="w-full" size="lg" onClick={() => setIsDialogOpen(true)} disabled={isLoading || user == null}>
                   Purchase
                 </Button>
           )}
