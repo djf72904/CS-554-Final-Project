@@ -168,13 +168,15 @@ export default function PurchaseConfirmation({transaction, seller}: Readonly<{ t
 
                 </div>
                 <div className={'flex flex-col space-y-6'}>
-                    <SellerRatingDialog
+                    {transaction.rating === 0 ?
+                        (<SellerRatingDialog
                         sellerId={seller._id}
                         sellerName={seller.displayName}
                         transactionId={transaction._id}
                         isOpen={isDialogOpen}
                         onOpenChange={setIsDialogOpen}
-                    />
+                    />): null
+                    }
                     <Card>
                         <CardHeader>
                             <CardTitle>Seller Information</CardTitle>

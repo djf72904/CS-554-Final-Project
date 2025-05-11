@@ -13,12 +13,14 @@ interface ListingCardProps {
     credits: number
     images: string[]
     school: string
+    status: string
+    transactionId: string
   }
 }
 
 export default function ListingCard({ listing }: ListingCardProps) {
   return (
-    <Link href={`/items/${listing._id}`} className="group bg-gray-100 rounded-xl shadow-sm hover:shadow-xl transition-shadow duration-300">
+    <Link href={listing.status === "complete" ? `/confirmation/${listing.transactionId}` : `/items/${listing._id}`} className="group bg-gray-100 rounded-xl shadow-sm hover:shadow-xl transition-shadow duration-300">
       <div className="relative aspect-square rounded-t-xl overflow-hidden">
         <Image
           src={listing.images?.[0] || "/placeholder.svg?height=600&width=600"}
@@ -37,7 +39,12 @@ export default function ListingCard({ listing }: ListingCardProps) {
         <div className="flex justify-between">
           <h3 className="font-semibold">{listing.title}</h3>
         </div>
-        <p className="text-sm text-gray-500">Available now</p>
+        {listing.status === "active" ? (
+            <p className="text-sm text-gray-500">Available now</p>
+        ) :
+        (
+            <p className="text-sm text-gray-500">Go to Purchase Confirmation</p>
+        )}
         <p className="font-semibold mt-1">
           ${listing.price}{" "}
           {listing.credits && <span className="text-sm font-normal">or {listing.credits} credits</span>}

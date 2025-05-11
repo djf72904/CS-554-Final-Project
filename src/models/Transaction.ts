@@ -34,7 +34,7 @@ const TransactionSchema: Schema = new Schema({
     index: true,
   },
   review: { type: String, default: "" },
-  rating: {type: Number, default: 5},
+  rating: {type: Number, default: 0},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 })

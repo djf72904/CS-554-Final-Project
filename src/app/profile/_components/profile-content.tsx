@@ -171,7 +171,9 @@ export default function ProfileContent({
                             images: (tx.listingId as MongoListingType).images,
                             school: (tx.listingId as MongoListingType).school,
                             price: (tx.listingId as MongoListingType).price,
-                            title: (tx.listingId as MongoListingType).title
+                            title: (tx.listingId as MongoListingType).title,
+                            status: (tx.listingId as MongoListingType).status,
+                            transactionId: tx._id as string
                           }}/>
                         </div>
                     ))}
@@ -247,7 +249,9 @@ export default function ProfileContent({
                           images: (saved.images),
                           school: (saved.school),
                           price: (saved.price),
-                          title: (saved.title)
+                          title: (saved.title),
+                          status: (saved.status),
+                          transactionId: ""
                         }}/>
                       </div>
                     ))}
