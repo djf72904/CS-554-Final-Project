@@ -467,7 +467,10 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
           </div>
         <div className="flex items-baseline justify-between mt-4">
           <div className="text-2xl font-bold">${item.price}</div>
-          <div className="text-gray-600">or {item.credits} credits</div>
+            {userProfile?.school === item.school ?
+                (<div className="text-gray-600">or {item.credits} credits</div>)
+                : null
+            }
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-2">

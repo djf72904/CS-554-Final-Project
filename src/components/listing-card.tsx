@@ -4,6 +4,7 @@ import {GraduationCap, Heart} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {capitalizeFirstLetter} from "@/lib/text";
 import {Graduate} from "next/dist/compiled/@next/font/dist/google";
+import {useAuth} from "@/context/auth-context";
 
 interface ListingCardProps {
   listing: {
@@ -19,6 +20,8 @@ interface ListingCardProps {
 }
 
 export default function ListingCard({ listing }: ListingCardProps) {
+  const {userProfile} = useAuth()
+
   return (
     <Link href={listing.status === "complete" ? `/confirmation/${listing.transactionId}` : `/items/${listing._id}`} className="group bg-gray-100 rounded-xl shadow-sm hover:shadow-xl transition-shadow duration-300">
       <div className="relative aspect-square rounded-t-xl overflow-hidden">
@@ -47,7 +50,11 @@ export default function ListingCard({ listing }: ListingCardProps) {
         )}
         <p className="font-semibold mt-1">
           ${listing.price}{" "}
-          {listing.credits && <span className="text-sm font-normal">or {listing.credits} credits</span>}
+          {
+            userProfile?.school === listing.school ? (
+                listing.credits && <span className="text-sm font-normal">or {listing.credits} credits</span>
+            ) : null
+          }
         </p>
       </div>
     </Link>
