@@ -14,9 +14,7 @@ export const convertListingsToObj = async (listingList: any) => {
         if(!currListing){
             throw new Error(`listing with id: ${listingList[i]} at index ${i} of likedListings not found`)
         }
-        if(currListing.status === "active"){
-            listingObjs.push(await getListing(listingList[i]))
-        }
+        listingObjs.push(await getListing(listingList[i])) //keep sold in saved
     }
 
     return JSON.stringify(listingObjs)
