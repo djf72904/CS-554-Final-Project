@@ -1,0 +1,17 @@
+import { authenticator } from 'otplib';
+import User from '@/models/User';
+import {decryptSecret, encryptSecret} from "@/lib/crypto";
+import dbConnect from "@/lib/mongoose";
+import {NextResponse} from "next/server";
+
+export async function POST(req: Request) {
+    const { uid, token } = await req.json();
+
+    await dbConnect();
+    const user = await User.findOne({ uid });
+    if (!user || !user.totpSecret) return new Response('Unauthorized', { status: 401 });
+
+    const isValid = authenticator.check(token, decryptSecret(user.totpSecret));
+
+    return NextResponse.json({ success: isValid });
+}
