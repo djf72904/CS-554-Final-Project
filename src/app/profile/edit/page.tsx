@@ -19,6 +19,8 @@ export default async function ProfileEditPage() {
 
     const payment_methods: MongoPaymentMethodsType[] = JSON.parse(await getPaymentMethods(user?.id))
 
+    console.log(payment_methods)
+
 
 
     return <ProfileEdit oldDisplayName={currUserDisplayName} payment_methods={payment_methods}/>

@@ -6,6 +6,7 @@ export interface MongoPaymentMethodsType extends Document {
     cardNumber: string
     expirationDate: string
     cvv: string
+    last4: string
     createdAt: Date
 }
 
@@ -15,6 +16,7 @@ const PaymentMethodSchema: Schema = new Schema({
     cardNumber: { type: String, required: true },
     expirationDate: { type: String, required: true },
     cvv: { type: String, required: true },
+    last4: {type: String, required: true},
     createdAt: { type: Date, default: Date.now },
 })
 

@@ -128,6 +128,7 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                             expirationDate: cardForm.expiryDate,
                             billingName: cardForm.cardName,
                             cvv: cardForm.cvv,
+                            last4: cardForm.cardNumber.slice(-4),
                             userId: user?.uid!,
                             createdAt: new Date()
                         }}),
@@ -257,9 +258,8 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                                                             </div>
                                                             <div>
                                                                 <Label htmlFor={paymentMethods.id} className="text-base font-medium flex items-center">
-                                                                    •••• {paymentMethods.cardNumber.slice(paymentMethods.cardNumber.length - 5, paymentMethods.cardNumber.length - 1)}
+                                                                    •••• {paymentMethods.last4}
                                                                 </Label>
-                                                                <div className="text-sm text-muted-foreground">Expires {paymentMethods.expirationDate}</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -393,7 +393,7 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                           onClick={handleSubmit}
                           disabled={isProcessing || (paymentMethod === "credit" && (userProfile?.credits || 0) < item.credits)
                               || (paymentMethod === "card" && (userProfile?.balance || 0) < item.price)
-                              || (paymentMethod === "card" && !validateCardInfo())
+                              || (paymentMethod === "card" && (userPaymentMethod === null && !validateCardInfo()))
                           }
                       >
                           {isProcessing

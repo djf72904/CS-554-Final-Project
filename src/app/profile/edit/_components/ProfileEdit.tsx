@@ -298,7 +298,7 @@ export const ProfileEdit = ({payment_methods, oldDisplayName}: {
                                                         </div>
                                                         <div>
                                                             <Label htmlFor={method.id} className="text-base font-medium flex items-center">
-                                                                •••• {method.cardNumber.slice(method.cardNumber.length - 5, method.cardNumber.length - 1)}
+                                                                •••• {method.last4}
                                                             </Label>
                                                             <div className="text-sm text-muted-foreground">Expires {method.expirationDate}</div>
                                                         </div>

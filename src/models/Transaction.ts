@@ -24,7 +24,7 @@ const TransactionSchema: Schema = new Schema({
   credits: { type: Number, required: true },
   paymentMethod: {
     type: String,
-    enum: ["cash", "credit"],
+    enum: ["card", "credit"],
     required: true,
   },
   status: {
