@@ -14,7 +14,9 @@ export interface MongoUserType extends Document {
   updatedAt: Date
   likedPosts: string[]
   // Cash balance
-  balance: number
+  balance: number,
+  totpSecret: string,
+  mfaEnabled: boolean
 }
 
 const UserSchema: Schema = new Schema({
@@ -28,6 +30,8 @@ const UserSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   likedPosts: { type: [String], default: [] },
+  totpSecret: { type: String, default: "" },
+  mfaEnabled: { type: Boolean, default: false },
 })
 
 UserSchema.pre("save", function (next) {

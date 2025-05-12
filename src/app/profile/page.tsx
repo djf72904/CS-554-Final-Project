@@ -22,7 +22,7 @@ export default async function ProfilePage() {
     const transactions: TransactionData[] = JSON.parse(await getTransactionsByUser(user?.id)) ?? []
     const savedPosts = JSON.parse(await convertListingsToObj(await getSavedListingsFromUser(user?.id))) ?? null
     const reviews = JSON.parse(await fetchReviewsForUser(user?.id)) ?? []
-    const userProfile = JSON.parse(await getUserProfile(user.id)) ?? null
+    const userProfile = (await getUserProfile(user.id)) ?? null
 
     console.log(savedPosts)
 

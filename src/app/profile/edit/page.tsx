@@ -15,11 +15,9 @@ export default async function ProfileEditPage() {
         return notFound()
     }
 
-    const currUserDisplayName = JSON.parse((await getUserProfile(user.id))).displayName;
+    const currUserDisplayName = ((await getUserProfile(user.id))).displayName;
 
     const payment_methods: MongoPaymentMethodsType[] = JSON.parse(await getPaymentMethods(user?.id))
-
-    console.log(payment_methods)
 
 
 

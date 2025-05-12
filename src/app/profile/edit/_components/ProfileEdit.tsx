@@ -3,10 +3,10 @@
 import {useRouter} from "next/navigation";
 import {useAuth} from "@/context/auth-context";
 import React, {useEffect, useState} from "react";
-import {updateUserProfile} from "@/lib/users";
+import {disableMfa, setMfaSecret, updateUserProfile} from "@/lib/users";
 import {toast} from "@/hooks/use-toast";
 import ProtectedRoute from "@/components/protected-route";
-import {ArrowLeft, CreditCard, Edit, Loader2, Trash2, Wallet, X} from "lucide-react";
+import {ArrowLeft, CreditCard, Edit, Loader2, ShieldCheck, ShieldX, Trash2, Wallet, X} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
@@ -33,6 +33,10 @@ import {
 import {format} from "date-fns";
 import {Separator} from "@radix-ui/react-menu";
 import {DialogBody} from "next/dist/client/components/react-dev-overlay/ui/components/dialog";
+import {Badge} from "@/components/ui/badge";
+import QRCodeDialog from "@/components/qr-code-mfa";
+import {OTPInput} from "input-otp";
+import {InputOTPSeparator, InputOTPSlot} from "@/components/ui/input-otp";
 
 export const ProfileEdit = ({payment_methods, oldDisplayName}: {
     payment_methods: MongoPaymentMethodsType[],
@@ -54,14 +58,18 @@ export const ProfileEdit = ({payment_methods, oldDisplayName}: {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
     const [pm, setPM] = useState<any[]>(payment_methods)
+    const [qrCodeData, setQrCodeData] = useState<{ qr: string, secret: string } | null>(null);
+    const [isMFAEnabled, setisMFAEnabled] = useState<boolean>()
+
 
     useEffect(() => {
         if (userProfile) {
             setFormData({
                 displayName: oldDisplayName || "",
             })
+            setisMFAEnabled(userProfile?.mfaEnabled)
         }
-    }, [oldDisplayName])
+    }, [oldDisplayName, userProfile])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target
@@ -220,8 +228,48 @@ export const ProfileEdit = ({payment_methods, oldDisplayName}: {
         }
     }
 
+    const handleToggleMfa = async () => {
+        setIsLoading(true);
+        try {
+            if (isMFAEnabled) {
+                await disableMfa(userProfile?.uid!);
+                toast({ title: "MFA Disabled" });
+                setisMFAEnabled(false)
+            } else {
+                const jwt = await user?.getIdToken();
+                const response = await fetch('/api/mfa/setup', {
+                    method: "POST",
+                    body: JSON.stringify({ uid: user?.uid! }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${jwt}`
+                    }
+                });
+                const { qr, secret } = await response.json();
+                setQrCodeData({ qr, secret });
+            }
+        } catch (err) {
+            console.error('Failed to update MFA:', err);
+            toast({ title: "Error", description: "Could not update MFA.", variant: "destructive" });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <ProtectedRoute>
+            {qrCodeData && (
+                <QRCodeDialog
+                    qrCode={qrCodeData.qr}
+                    secret={qrCodeData.secret}
+                    uid={user?.uid!}
+                    onVerified={() => {
+                        setQrCodeData(null);
+                        setisMFAEnabled(true)
+                        toast({ title: "MFA Enabled" });
+                    }}
+                />
+            )}
             <div className="container mx-auto px-4 py-8">
                 <div className="max-w-3xl mx-auto">
                     <div className="flex items-center mb-6">
@@ -279,6 +327,38 @@ export const ProfileEdit = ({payment_methods, oldDisplayName}: {
                                     </div>
                                 </CardContent>
                             </Card>
+                            <Card className="mt-2">
+                                <CardHeader className="flex flex-row items-start justify-between">
+                                    <div>
+                                        <CardTitle>Multi-Factor Authentication</CardTitle>
+                                        <p className="text-sm text-muted-foreground mt-1">
+                                            Enhance your account security with a TOTP-based second factor.
+                                        </p>
+                                    </div>
+                                    <Badge variant={isMFAEnabled ? 'outline' : 'secondary'}>
+                                        {isMFAEnabled ? (
+                                            <>
+                                                <ShieldCheck className="mr-1 h-4 w-4" />
+                                                Enabled
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ShieldX className="mr-1 h-4 w-4" />
+                                                Disabled
+                                            </>
+                                        )}
+                                    </Badge>
+                                </CardHeader>
+
+                                <CardContent className="space-y-6">
+                                    <Button
+                                        variant={isMFAEnabled ? 'destructive' : 'secondary'}
+                                        onClick={handleToggleMfa}
+                                    >
+                                        {isMFAEnabled ? 'Disable MFA' : 'Enable MFA'}
+                                    </Button>
+                                </CardContent>
+                            </Card>
                         </TabsContent>
                         <TabsContent value={'payment_info'}>
                             {
@@ -286,7 +366,7 @@ export const ProfileEdit = ({payment_methods, oldDisplayName}: {
                                     <div className="space-y-4">
                                         {pm.map((method) => (
                                             <div
-                                                key={method.id}
+                                                key={method._id}
                                                 className={cn(
                                                     "flex items-center justify-between rounded-lg border p-4",
                                                 )}
@@ -298,7 +378,7 @@ export const ProfileEdit = ({payment_methods, oldDisplayName}: {
                                                         </div>
                                                         <div>
                                                             <Label htmlFor={method.id} className="text-base font-medium flex items-center">
-                                                                •••• {method.last4}
+                                                                •••• {method.cardNumber.slice(method.cardNumber.length - 5, method.cardNumber.length - 1)}
                                                             </Label>
                                                             <div className="text-sm text-muted-foreground">Expires {method.expirationDate}</div>
                                                         </div>

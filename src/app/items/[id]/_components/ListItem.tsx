@@ -10,13 +10,11 @@ import {MongoPaymentMethodsType} from "@/models/PaymentMethods";
 import ContactSeller from "@/components/ContactSeller";
 
 export const ListItem = ({
-    user,
     item,
     isLiked,
     seller,
                              payment_methods
                          }: {
-    user: any
     item: any
     isLiked: boolean
     seller: MongoUserType,
@@ -27,7 +25,7 @@ export const ListItem = ({
         <main className="container mx-auto px-4 py-6">
             <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-bold">{item.title}</h1>
-                <ListingItem jwt={user?.jwt!} item={item} isLiked={isLiked}/>
+                <ListingItem item={item} isLiked={isLiked}/>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

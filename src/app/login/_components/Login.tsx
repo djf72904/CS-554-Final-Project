@@ -1,13 +1,19 @@
+'use client'
+
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {ShoppingCart} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {useAuth} from "@/context/auth-context";
 import {useRouter} from "next/navigation";
 import {useEffect} from "react";
+import MfaPromptDialog from "@/components/mfa-verify";
+import {setCookie} from "cookies-next";
+import searchColleges from "@/lib/college";
+import {getUserProfile} from "@/lib/users";
 
 export const Login = () => {
 
-    const { user, loading, signInWithGoogle } = useAuth()
+    const { user, loading, signInWithGoogle, needsMfa, pendingMfaUser, setUser, setUserProfile, setNeedsMfa, setPendingMfaUser, setSchool} = useAuth()
     const router = useRouter()
 
     useEffect(() => {
@@ -24,7 +30,34 @@ export const Login = () => {
         )
     }
 
+
     return (<div className=" flex items-center justify-center min-h-[calc(100vh-80px)] w-full">
+        <MfaPromptDialog open={needsMfa} onClose={()=>{}} uid={user?.uid!}  onSuccess={async () => {
+            const token = await pendingMfaUser!.getIdToken(true)
+            setCookie('auth-token', token, {
+                maxAge: 60 * 60,
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict'
+            })
+            setCookie('auth-token-mfa', "true", {
+                maxAge: 60 * 60,
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict'
+            })
+
+
+            const profile = await getUserProfile(pendingMfaUser!.uid)
+            const domain = pendingMfaUser!.email?.split('@')[1] || ''
+            const colleges = await searchColleges.byDomain(domain)
+
+            setSchool(colleges?.[0]?.name || '')
+            setUser(pendingMfaUser)
+            setUserProfile(profile)
+            setNeedsMfa(false)
+            setPendingMfaUser(null)
+        }}/>
         <Card className="w-full max-w-md">
             <CardHeader className="text-center">
                 <div className={'bg-rose-500 text-white p-2 w-fit rounded-md flex justify-center self-center align-super mb-2'}>

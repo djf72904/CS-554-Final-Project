@@ -6,10 +6,9 @@ import {useAuth} from "@/context/auth-context";
 import {useState} from "react";
 import NumberFlow from "@number-flow/react";
 
-export const ListingItem = ({item, isLiked, jwt}: {
+export const ListingItem = ({item, isLiked}: {
     item: any,
     isLiked: boolean,
-    jwt: string
 }) => {
     const {user} = useAuth()
 
@@ -30,7 +29,7 @@ export const ListingItem = ({item, isLiked, jwt}: {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${jwt}`
+                    "Authorization": `Bearer ${await user?.getIdToken()}`
                 }
             });
             const fullUserInfo = JSON.parse((await getResponse.json()).user)
@@ -46,7 +45,7 @@ export const ListingItem = ({item, isLiked, jwt}: {
                 body: JSON.stringify(fullUserInfo),
                 headers:{
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${jwt}`
+                    "Authorization": `Bearer ${await user?.getIdToken()}`
                 }
             });
             return await patchResponse.json()
@@ -66,7 +65,7 @@ export const ListingItem = ({item, isLiked, jwt}: {
                 body: JSON.stringify(item),
                 headers:{
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${jwt}`
+                    "Authorization": `Bearer ${await user?.getIdToken()}`
                 }
             });
             return await patchResponse.json()

@@ -13,7 +13,7 @@ export default async function PurchaseConfirmationPage({
 }) {
 
     const transaction = JSON.parse(await getTransaction((await params).transaction_id) ?? "")
-    const seller = JSON.parse(await getUserProfile(transaction.sellerId))
+    const seller = (await getUserProfile(transaction.sellerId))
 
     if(!transaction){
         return notFound()

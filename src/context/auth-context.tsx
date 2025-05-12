@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { createContext, useContext, useEffect, useState } from "react"
 import {
   type User as UserType,
@@ -11,41 +10,16 @@ import {
   onAuthStateChanged,
 } from "firebase/auth"
 import { auth } from "@/lib/firebase"
-import { getUserProfile, getUserByEmail, type UserProfile } from "@/lib/users"
+import {
+  getUserProfile,
+  getUserByEmail,
+  type UserProfile,
+  createUserProfile,
+} from "@/lib/users"
 import { useRouter } from "next/navigation"
-import searchColleges from "@/lib/college";
-import type {User as FirebaseUser} from "@firebase/auth";
-import {deleteCookie, setCookie} from "cookies-next";
-
-
-async function createUserProfile(user: FirebaseUser): Promise<any> {
-  try {
-    const token = await user.getIdToken()
-    const response = await fetch("/api/users/profile", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        uid: user.uid,
-        displayName: user.displayName,
-        email: user.email,
-        school: user.email?.split("@")[1]?.split(".edu")[0] || "",
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error("Failed to create user profile")
-    }
-
-    const data = await response.json()
-    return data.user
-  } catch (error) {
-    console.error("Error creating user profile:", error)
-    return null
-  }
-}
+import type { User as FirebaseUser } from "@firebase/auth"
+import {deleteCookie, getCookie, setCookie} from "cookies-next"
+import searchColleges from "@/lib/college"
 
 interface AuthContextType {
   user: UserType | null
@@ -54,6 +28,13 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
   school: string
+  needsMfa: boolean
+  setNeedsMfa: (val: boolean) => void
+  pendingMfaUser: FirebaseUser | null
+  setPendingMfaUser: (user: FirebaseUser | null) => void
+  setUserProfile: (profile: UserProfile | null) => void
+  setUser: (user: UserType | null) => void
+  setSchool: any
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -63,6 +44,13 @@ const AuthContext = createContext<AuthContextType>({
   signInWithGoogle: async () => {},
   signOut: async () => {},
   school: '',
+  needsMfa: false,
+  setNeedsMfa: () => {},
+  pendingMfaUser: null,
+  setPendingMfaUser: () => {},
+  setUserProfile: () => {},
+  setUser: () => {},
+  setSchool: () => {}
 })
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -70,86 +58,100 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [school, setSchool] = useState('')
+  const [needsMfa, setNeedsMfa] = useState(false)
+  const [pendingMfaUser, setPendingMfaUser] = useState<FirebaseUser | null>(null)
+
   const router = useRouter()
 
-
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-
-      if(!user?.email?.endsWith(".edu")){
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser?.email?.endsWith('.edu')) {
         setLoading(false)
         return
       }
 
-      setUser(user)
+      try {
+        const profile = await getUserByEmail(firebaseUser.email)
+        const hasMFA = getCookie('auth-token-mfa')
 
-      if (user) {
-
-        const token = await user.getIdToken(true)
-
-        // Set the token in cookies
-        setCookie('auth-token', token, {
-          maxAge: 60 * 60,
-          path: '/',
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict'
-        });
-
-
-        if (user.email) {
-          searchColleges.byDomain(user.email.split('@')[1]).then((res) => {
-            setSchool(res[0].name)
-          })
-        } else {
-          deleteCookie('auth-token');
-          setSchool('')
+        if (profile?.mfaEnabled && !hasMFA) {
+          setPendingMfaUser(firebaseUser)
+          setNeedsMfa(true)
+          setLoading(false)
+          return
         }
 
-        if(!user.email?.endsWith(".edu")) {
-          return;
-        }
-
-        try {
-          await createUserProfile(user)
-          const profile = JSON.parse(await getUserProfile(user.uid))
-          setUserProfile(profile)
-        } catch (error) {
-          console.error("Error fetching user profile:", error)
-        }
-      } else {
-        setUserProfile(null)
-        setSchool('')
+        await completeLogin(firebaseUser)
+      } catch (err) {
+        console.error('Auth error:', err)
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     })
 
     return () => unsubscribe()
   }, [])
 
+  const completeLogin = async (firebaseUser: FirebaseUser) => {
+    try {
+      setUser(firebaseUser)
+
+      const token = await firebaseUser.getIdToken()
+      setCookie('auth-token', token, {
+        maxAge: 60 * 60,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+      })
+
+      if (firebaseUser.email) {
+        const domain = firebaseUser.email.split('@')[1]
+        const college = await searchColleges.byDomain(domain)
+        setSchool(college?.[0]?.name || '')
+        const profile = (await getUserProfile(firebaseUser.uid))
+        if(!profile){
+          await createUserProfile({
+            uid: firebaseUser.uid,
+            displayName: firebaseUser.displayName,
+            email: firebaseUser.email,
+          })
+          setUserProfile(profile)
+        }
+        else{
+          setUserProfile(profile)
+        }
+      }
+
+
+    } catch (err) {
+      console.error("Failed during login:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const signInWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider()
       provider.setCustomParameters({ prompt: "select_account" })
-
       const result = await signInWithPopup(auth, provider)
+      const firebaseUser = result.user
 
-      if (result.user.email?.endsWith(".edu")) {
-        const profile = await getUserByEmail(result.user.email)
-        let newUser = false;
-        if(!profile) {
-          newUser = true
-          await createUserProfile(result.user)
-        }
-        const finalProfile = profile || await getUserByEmail(result.user.email)
-        setUserProfile(finalProfile)
-        router.push(newUser ? '/?newUser=true' : '/');
-      } else {
+      if (!firebaseUser.email?.endsWith(".edu")) {
         await firebaseSignOut(auth)
         alert("Please sign in with a .edu email address")
-        setSchool('')
-        setUserProfile(null)
+        return
       }
+
+      const profile = await getUserByEmail(firebaseUser.email)
+      if (profile?.mfaEnabled) {
+        setPendingMfaUser(firebaseUser)
+        setNeedsMfa(true)
+        return
+      }
+
+      await completeLogin(firebaseUser)
+      router.push('/')
     } catch (error) {
       console.error("Error signing in with Google", error)
     }
@@ -158,15 +160,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     try {
       await firebaseSignOut(auth)
-
-      // Clear all local states and cookies
       setUser(null)
       setUserProfile(null)
       setSchool('')
+      setNeedsMfa(false)
+      setPendingMfaUser(null)
       deleteCookie('auth-token')
-      router.push('/login')
+      deleteCookie('auth-token-mfa')
+      router.push('/')
     } catch (error) {
-      console.error('Error signing out', error)
+      console.error("Error signing out", error)
     }
   }
 
@@ -178,9 +181,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             loading,
             signInWithGoogle,
             signOut,
-            school: school,
+            school,
+            needsMfa,
+            setNeedsMfa,
+            pendingMfaUser,
+            setPendingMfaUser,
+            setUserProfile,
+            setUser,
+            setSchool
           }}
-
       >
         {children}
       </AuthContext.Provider>
@@ -188,4 +197,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 }
 
 export const useAuth = () => useContext(AuthContext)
-

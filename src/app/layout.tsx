@@ -23,6 +23,7 @@ export default function RootLayout({
         <AuthProvider>
           <Header />
           {children}
+          <Toaster/>
         </AuthProvider>
       </body>
     </html>
@@ -32,3 +33,4 @@ export default function RootLayout({
 
 
 import './globals.css'
+import {Toaster} from "@/components/ui/toaster";

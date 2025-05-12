@@ -36,6 +36,6 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
 
 
 
-  return <ListItem item={item} isLiked={isLiked} user={user} seller={seller} payment_methods={payment_methods}/>
+  return <ListItem item={item} isLiked={isLiked} seller={seller} payment_methods={payment_methods}/>
 }
 
