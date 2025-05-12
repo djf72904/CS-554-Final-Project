@@ -33,7 +33,7 @@ export const ListItem = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <div className="md:col-span-2 aspect-video relative rounded-lg overflow-hidden">
+                        <div className="md:col-span-2 aspect-square relative rounded-lg overflow-hidden">
                             <Image src={item.images?.[0] || "/placeholder.svg"} alt={item.title} fill className="object-cover" />
                         </div>
                         {item.images?.slice(1, 5).map((image: string, index: number) => (

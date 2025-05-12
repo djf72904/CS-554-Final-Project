@@ -52,6 +52,7 @@
     "firebase": "latest",
     "firebase-admin": "latest",
     "gcp-metadata": "latest",
+    "gm": "^1.25.1",
     "input-otp": "1.4.1",
     "kerberos": "latest",
     "lucide-react": "^0.454.0",
