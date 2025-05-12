@@ -1,12 +1,13 @@
 import mongoose from "mongoose"
 import User from "@/models/User"
 import Listing from "@/models/Listing"
+import Transaction from "@/models/Transaction"
 
 async function seedDatabase() {
     try {
         const uri = "mongodb://localhost:27017/"
         await mongoose.connect(uri)
-        console.log("✅ Connected to MongoDB: test")
+        console.log("Connected to MongoDB: test")
 
         //Clear old data
         await User.deleteMany({})
@@ -46,7 +47,7 @@ async function seedDatabase() {
         })
 
         // Seed Listings
-        await Listing.create([
+        const listing = await Listing.create(
             {
                 title: "Calculus Textbook",
                 description: "Used but in good condition. Great for first-year students.",
@@ -57,9 +58,12 @@ async function seedDatabase() {
                 images: [],
                 userId: user1.uid,
                 school: user1.school,
-                status: "active",
+                status: "completed",
                 pickup_location: "UCC",
-            },
+            }
+        )
+
+        await Listing.create([
             {
                 title: "Noise Cancelling Headphones",
                 description: "Barely used. Excellent for studying.",
@@ -100,10 +104,21 @@ async function seedDatabase() {
                 pickup_location: "UCC",
             }
         ])
+        await Transaction.create({
+            buyerId: user2.uid,
+            sellerId: user1.uid,
+            listingId: listing._id,
+            amount: listing.price,
+            credits: listing.credits,
+            paymentMethod: "cash",
+            status: "completed",
+            review: "Fast transaction, great product!",
+            rating: 5,
+        })
 
-        console.log("✅ Seeded users and listings")
+        console.log("Seeded users, listings, transaction")
     } catch (err) {
-        console.error("❌ Error seeding database:", err)
+        console.error("Error seeding database:", err)
     } finally {
         await mongoose.disconnect()
         console.log("Disconnected")
