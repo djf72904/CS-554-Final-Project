@@ -220,7 +220,7 @@ export default function ListItemForm() {
           <Label>Images</Label>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {imageUrls.map((imageUrl, index) => (
-              <div key={index} className="relative aspect-square w-full">
+              <div key={index} className="relative aspect-square">
                 <Image
                   src={imageUrl || "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"}
                   alt={`Uploaded image ${index + 1}`}
