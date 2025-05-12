@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Set the token in cookies
         setCookie('auth-token', token, {
-          maxAge: 60 * 60, // 1 hour (matches Firebase token expiry)
+          maxAge: 60 * 60,
           path: '/',
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict'
