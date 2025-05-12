@@ -156,34 +156,34 @@ export default function ProfileContent({
               ))}
             </div>
           </TabsContent>
-          <TabsContent value="purchases">
-            <div className="text-center text-muted-foreground py-8">
-              {
-                transactions?.length ?
-                  <div>{transactions.filter((tx: MongoTransactionType) => {
-                    return tx.buyerId === user?.uid
-                  }).map((tx: MongoTransactionType, i: number) => (
-                    <div key={`transactions:${i}`}>
-                      <ListingCard listing={{
-                        _id: (tx.listingId as MongoListingType)._id as string,
-                        credits: (tx.listingId as MongoListingType).credits,
-                        images: (tx.listingId as MongoListingType).images,
-                        school: (tx.listingId as MongoListingType).school,
-                        price: (tx.listingId as MongoListingType).price,
-                        title: (tx.listingId as MongoListingType).title,
-                        status: (tx.listingId as MongoListingType).status,
-                        transactionId: tx._id as string
-                      }} />
-                    </div>
-                  ))}
-                  </div> : <div className="text-center text-muted-foreground py-8">
-                    <p className="mb-4">You haven't made any purchases yet.</p>
-                    <Link href="/">
-                      <Button>Browse Items</Button>
-                    </Link>
+          <TabsContent value="purchases" className="mt-6">
+            {transactions?.length ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {transactions.filter((tx: MongoTransactionType) => {
+                  return tx.buyerId === user?.uid
+                }).map((tx: MongoTransactionType, i: number) => (
+                  <div key={`transactions:${i}`}>
+                    <ListingCard listing={{
+                      _id: (tx.listingId as MongoListingType)._id as string,
+                      credits: (tx.listingId as MongoListingType).credits,
+                      images: (tx.listingId as MongoListingType).images,
+                      school: (tx.listingId as MongoListingType).school,
+                      price: (tx.listingId as MongoListingType).price,
+                      title: (tx.listingId as MongoListingType).title,
+                      status: (tx.listingId as MongoListingType).status,
+                      transactionId: tx._id as string
+                    }} />
                   </div>
-              }
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-muted-foreground py-8">
+                <p className="mb-4">You haven't made any purchases yet.</p>
+                <Link href="/">
+                  <Button>Browse Items</Button>
+                </Link>
+              </div>
+            )}
           </TabsContent>
           <TabsContent value="reviews">
             <div className="text-left text-muted-foreground">
