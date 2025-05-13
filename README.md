@@ -12,8 +12,11 @@ npm install --legacy-peer-deps
 ```
 
 Next, install RabbitMQ and make sure it is running:
+(for macOS)
 ```bash
-# TODO
+brew install rabbitmq
+# then
+brew services start rabbitmq
 ```
 
 Next, run the utility function for handling messages:
