@@ -3,9 +3,8 @@
 import type React from "react"
 
 import { useEffect } from "react"
-import {unauthorized, useRouter} from "next/navigation"
+import {useRouter} from "next/navigation"
 import { useAuth } from "@/context/auth-context"
-import Loading from "@/app/loading";
 import {Loader} from "lucide-react";
 
 export default function ProtectedRoute({ children }: Readonly<{ children: React.ReactNode }>) {

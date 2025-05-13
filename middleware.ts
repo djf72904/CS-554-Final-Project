@@ -19,11 +19,6 @@ const token = request.cookies.get("auth-token")?.value || ""
     return NextResponse.redirect(new URL("/", request.url))
   }
 
-  if (path === "/messages" && !token) {
-    // Redirect to home if trying to access login with a token
-    return NextResponse.redirect(new URL("/login", request.url))
-  }
-
   return NextResponse.next()
 }
 

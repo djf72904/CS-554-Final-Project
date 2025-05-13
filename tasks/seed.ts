@@ -1,7 +1,6 @@
 import mongoose from "mongoose"
 import User from "@/models/User"
 import Listing from "@/models/Listing"
-import Transaction from "@/models/Transaction"
 
 async function seedDatabase() {
     try {
@@ -14,7 +13,7 @@ async function seedDatabase() {
         await Listing.deleteMany({})
 
         // Seed Users
-        const user1 = await User.create({
+        await User.create({
             uid: "user-001",
             displayName: "Divya Prahlad",
             email: "dprahlad@stevens.edu",
@@ -67,7 +66,7 @@ async function seedDatabase() {
         })
 
         // Seed Listings
-        const listing = await Listing.create(
+        await Listing.create([
             {
                 title: "Calculus Textbook",
                 description: "Used but in good condition. Great for first-year students.",
@@ -80,10 +79,7 @@ async function seedDatabase() {
                 school: user2.school,
                 status: "active",
                 pickup_location: "UCC",
-            }
-        )
-
-        await Listing.create([
+            },
             {
                 title: "Noise Cancelling Headphones",
                 description: "Barely used. Excellent for studying.",
@@ -125,7 +121,7 @@ async function seedDatabase() {
             }
         ])
 
-        console.log("Seeded users, listings, transaction")
+        console.log("Seeded users, listings,")
     } catch (err) {
         console.error("Error seeding database:", err)
     } finally {

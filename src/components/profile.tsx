@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import ProtectedRoute from "@/components/protected-route"
 import ProfileContent from "../app/profile/_components/profile-content"
 import {ProfileSkeleton} from "@/app/profile/_components/ProfileSkeleton";
-import {getListingById, getListingsByUserId} from "@/lib/server-actions";
+import {getListingsByUserId} from "@/lib/server-actions";
 import {getCurrentUser} from "@/lib/auth";
 import {notFound} from "next/navigation";
 import {getTransactionsByUser, TransactionData} from "@/lib/transactions";
