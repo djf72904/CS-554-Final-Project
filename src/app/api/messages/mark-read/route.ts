@@ -9,6 +9,7 @@ export async function POST(req: Request) {
         if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
         const decoded = await auth.verifyIdToken(token)
+
         const { participantId } = await req.json()
 
         await dbConnect()
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ success: true })
     } catch (err) {
-        console.error("❌ Failed to mark messages read:", err)
+        console.error("Failed to mark messages read:", err)
         return NextResponse.json({ error: "Failed to update" }, { status: 500 })
     }
 }

@@ -4,6 +4,7 @@ import User from "@/models/User";
 import Listing from "@/models/Listing";
 import {createPaymentMethod} from "@/lib/payment-methods";
 import PaymentMethods, {MongoPaymentMethodsType} from "@/models/PaymentMethods";
+import {auth} from "@/lib/firebase-admin";
 
 export async function POST(request: NextRequest) {
     const token = request.headers.get("Authorization")?.split("Bearer ")[1]
@@ -12,12 +13,14 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const decoded = await auth.verifyIdToken(token)
+
     await dbConnect();
 
     try {
         const { data } = await request.json();
 
-        const user = await User.findOne({ uid: data?.userId });
+        const user = await User.findOne({ uid: decoded.uid });
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }

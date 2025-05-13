@@ -10,6 +10,8 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    await auth.verifyIdToken(token)
+
     try {
         const existingTransaction = await getTransaction((await params).id)
 

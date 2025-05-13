@@ -4,6 +4,7 @@ import User from "@/models/User";
 import Listing from "@/models/Listing";
 import {createTransaction} from "@/lib/transactions";
 import Transaction from "@/models/Transaction";
+import {auth} from "@/lib/firebase-admin";
 
 export async function POST(request: NextRequest) {
     const token = request.headers.get("Authorization")?.split("Bearer ")[1]
@@ -11,6 +12,8 @@ export async function POST(request: NextRequest) {
     if (!token) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
+
+    await auth.verifyIdToken(token)
 
     await dbConnect();
 

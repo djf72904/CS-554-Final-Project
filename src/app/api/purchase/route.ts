@@ -5,6 +5,7 @@ import Listing from "@/models/Listing";
 import { createTransaction } from "@/lib/transactions";
 import { addSoldOverlay } from "@/lib/image-processor";
 import path from "path";
+import {auth} from "@/lib/firebase-admin";
 
 export async function POST(request: NextRequest) {
     const token = request.headers.get("Authorization")?.split("Bearer ")[1]
@@ -13,12 +14,14 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const decoded = await auth.verifyIdToken(token)
+
     await dbConnect();
 
     try {
-        const { postId, buyerId, sellerId, balance, balanceType } = await request.json();
+        const { postId, sellerId, balance, balanceType } = await request.json();
 
-        const user = await User.findOne({ uid: buyerId });
+        const user = await User.findOne({ uid: decoded.uid });
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
@@ -32,7 +35,7 @@ export async function POST(request: NextRequest) {
 
         if (balanceType === 'credit') {
             const { _id } = await createTransaction({
-                buyerId: buyerId,
+                buyerId: decoded.uid,
                 sellerId: sellerId,
                 listingId: postId,
                 credits: balance,
@@ -47,7 +50,7 @@ export async function POST(request: NextRequest) {
         else {
             const { _id } =
                 await createTransaction({
-                    buyerId: buyerId,
+                    buyerId: decoded.uid,
                     sellerId: sellerId,
                     listingId: postId,
                     amount: balance,

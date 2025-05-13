@@ -2,6 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import dbConnect from "@/lib/mongoose";
 import User from "@/models/User";
 import Listing from "@/models/Listing";
+import {auth} from "@/lib/firebase-admin";
 
 export async function POST(request: NextRequest) {
 
@@ -11,13 +12,15 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const decoded = await auth.verifyIdToken(token)
+
 
     await dbConnect();
 
     try {
-        const { postId, userId } = await request.json();
+        const { postId } = await request.json();
 
-        const user = await User.findOne({ uid: userId });
+        const user = await User.findOne({ uid: decoded.uid });
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }

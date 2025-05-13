@@ -1,8 +1,9 @@
 import { authenticator } from 'otplib';
 import User from '@/models/User';
-import {decryptSecret, encryptSecret} from "@/lib/crypto";
+import {decryptSecret} from "@/lib/crypto";
 import dbConnect from "@/lib/mongoose";
 import {NextResponse} from "next/server";
+import {auth} from "@/lib/firebase-admin";
 
 export async function POST(req: Request) {
     const aToken = req.headers.get("Authorization")?.split("Bearer ")[1]
@@ -10,10 +11,13 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { uid, token } = await req.json();
+    const { token } = await req.json();
+    const decoded = await auth.verifyIdToken(token)
+
+
 
     await dbConnect();
-    const user = await User.findOne({ uid });
+    const user = await User.findOne({ uid: decoded.uid });
     if (!user || !user.totpSecret) return new Response('Unauthorized', { status: 401 });
 
     const isValid = authenticator.check(token, decryptSecret(user.totpSecret));
@@ -23,7 +27,7 @@ export async function POST(req: Request) {
     if(isValid){
         const encrypted = user.totpSecret;
         await User.updateOne(
-            { uid },
+            { uid: decoded.uid },
             {
                 $set: {
                     totpSecret: encrypted,
