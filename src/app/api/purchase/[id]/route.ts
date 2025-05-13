@@ -21,13 +21,15 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         const updatedTransaction = await updateTransaction((await params).id, data)
 
         let ratingSum = 0;
+        let sellerTransactionNum = 0
         const allTransactions = await getAllTransactions()
         for (let i=0; i<allTransactions.length; i++) {
             if(allTransactions[i].sellerId === updatedTransaction?.sellerId){
                 ratingSum += allTransactions[i].rating
+                sellerTransactionNum++
             }
         }
-        let finalRating = ratingSum / allTransactions.length
+        let finalRating = ratingSum / sellerTransactionNum
 
         const newRatingData = {
             rating: finalRating,

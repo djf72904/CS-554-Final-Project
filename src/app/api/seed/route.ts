@@ -1,11 +1,13 @@
 import {NextRequest, NextResponse} from "next/server";
 import dbConnect from "@/lib/mongoose";
-import User from "@/models/User";
-import Listing from "@/models/Listing";
+import User, {MongoUserType} from "@/models/User";
+import Listing, {MongoListingType} from "@/models/Listing";
 import {updateUserProfile} from "@/lib/users";
 import PaymentMethods from "@/models/PaymentMethods";
 import Message from "@/models/Message";
 import Transaction from "@/models/Transaction";
+import mongoose from "mongoose";
+import {getAllTransactions} from "@/lib/transactions";
 
 export async function POST(request: NextRequest) {
 
@@ -19,7 +21,7 @@ export async function POST(request: NextRequest) {
     await dbConnect();
 
     try {
-
+        console.log("deleting info already in db")
         await User.deleteMany({})
         await Listing.deleteMany({})
         await Message.deleteMany({})
@@ -114,7 +116,7 @@ export async function POST(request: NextRequest) {
                 condition: "Good",
                 price: 25,
                 credits: 10,
-                images: ["/public/listings/calcBook.png", "/public/listings/calcBook2.png"],
+                images: ["/listings/calcBook.png", "/listings/calcBook2.png"],
                 userId: user1.uid,
                 school: user1.school,
                 status: "active",
@@ -127,7 +129,7 @@ export async function POST(request: NextRequest) {
                 condition: "Like New",
                 price: 75,
                 credits: 30,
-                images: ["/public/listings/headphones.png"],
+                images: ["/listings/headphones.png"],
                 userId: user2.uid,
                 school: user2.school,
                 status: "active",
@@ -141,7 +143,7 @@ export async function POST(request: NextRequest) {
                 condition: "Excellent",
                 price: 50,
                 credits: 20,
-                images: ["/public/listings/ti-84_plus.png", "/public/listings/ti-84_plus2.png"],
+                images: ["/listings/ti-84_plus.png", "/listings/ti-84_plus2.png"],
                 userId: user4.uid,
                 school: user4.school,
                 status: "active",
@@ -154,7 +156,7 @@ export async function POST(request: NextRequest) {
                 condition: "Worn",
                 price: 75,
                 credits: 50,
-                images: ["/public/listings/couch.png"],
+                images: ["/listings/couch.png"],
                 userId: user3.uid,
                 school: user3.school,
                 status: "active",
@@ -168,7 +170,7 @@ export async function POST(request: NextRequest) {
                 condition: "Good",
                 price: 200,
                 credits: 100,
-                images: ["/public/listings/macbook.png", "/public/listings/macbook2.png"],
+                images: ["/listings/macbook.png", "/listings/macbook2.png"],
                 userId: user6.uid,
                 school: user6.school,
                 status: "active",
@@ -181,7 +183,7 @@ export async function POST(request: NextRequest) {
                 condition: "OK",
                 price: 20,
                 credits: 15,
-                images: ["/public/listings/saltyCrew.png", "/public/listings/saltyCrew2.png"],
+                images: ["/listings/saltyCrew.png", "/listings/saltyCrew2.png"],
                 userId: user5.uid,
                 school: user5.school,
                 status: "active",
@@ -198,12 +200,12 @@ export async function POST(request: NextRequest) {
                 condition: "New",
                 price: 45,
                 credits: 15,
-                images: ["/public/listings/columbiaShirt.png"],
+                images: ["/listings/columbiaShirt.png"],
                 userId: user5.uid,
                 school: user5.school,
                 status: "sold",
                 pickup_location: "Battery Park",
-                overlaySold: "/public/listings/columbiaShirt_sold.png",
+                overlaySold: "/listings/columbiaShirt_sold.png",
             },
             {
                 title: "Phone Case",
@@ -212,12 +214,12 @@ export async function POST(request: NextRequest) {
                 condition: "Used",
                 price: 15,
                 credits: 7,
-                images: ["/public/listings/phoneCase.png"],
+                images: ["/listings/phoneCase.png"],
                 userId: user1.uid,
                 school: user1.school,
                 status: "sold",
                 pickup_location: "Castle Point Hall",
-                overlaySold: "/public/listings/phoneCase_sold.png",
+                overlaySold: "/listings/phoneCase_sold.png",
             },
             {
                 title: "The Catcher in the Rye",
@@ -226,12 +228,12 @@ export async function POST(request: NextRequest) {
                 condition: "Old",
                 price: 10,
                 credits: 5,
-                images: ["/public/listings/catcherInRye.png"],
+                images: ["/listings/catcherInRye.png"],
                 userId: user4.uid,
                 school: user4.school,
                 status: "sold",
                 pickup_location: "EAS Building",
-                overlaySold: "/public/listings/catcherInRye_sold.png",
+                overlaySold: "/listings/catcherInRye_sold.png",
             },
         ])
         await updateUserProfile(user1.uid, {likedPosts: [activeListings[1]._id, activeListings[3]._id ]})
@@ -240,11 +242,74 @@ export async function POST(request: NextRequest) {
         await updateUserProfile(user4.uid, {likedPosts: [activeListings[3]._id]})
         await updateUserProfile(user5.uid, {likedPosts: [activeListings[5]._id]})
 
+        const transactions = await Transaction.create([
+            {
+                buyerId: user6.uid,
+                sellerId: user5.uid,
+                listingId: soldListings[0]._id,
+                amount: 45,
+                credits: 15,
+                paymentMethod: "card",
+                status: "complete",
+                rating: 4,
+                review: "Very nice and flexible with pickup! Bought for my brother!"
+            },
+            {
+                buyerId: user2.uid,
+                sellerId: user1.uid,
+                listingId: soldListings[1]._id,
+                amount: 15,
+                credits: 7,
+                paymentMethod: "credit",
+                status: "complete",
+                rating: 5,
+                review: "Much better condition than expected! Thanks for letting me use DuckBills!"
+            },
+            {
+                buyerId: user3.uid,
+                sellerId: user4.uid,
+                listingId: soldListings[2]._id,
+                amount: 10,
+                credits: 5,
+                paymentMethod: "card",
+                status: "complete",
+                rating: 3,
+                review: "Very old book but I love it. Love the history but wish it was in better condition."
+            }
+        ])
+
+        async function updateUserReviews(soldTransactions: any){
+            for (let i=0; i<soldTransactions.length; i++){
+                let ratingSum = 0;
+                let currSellerId = soldTransactions[i].sellerId;
+                let sellerTransactionNum = 0;
+                for (let j=0; j<soldTransactions.length; j++) {
+                    if(soldTransactions[j].sellerId === currSellerId){
+                        ratingSum += soldTransactions[j].rating
+                        sellerTransactionNum++;
+                    }
+                }
+                let finalRating = ratingSum / sellerTransactionNum;
+
+                const newRatingData = {
+                    rating: finalRating,
+                }
+
+                console.log(finalRating)
+
+               await updateUserProfile(currSellerId, newRatingData)
+            }
+        }
+
+        await updateUserReviews(transactions)
+
+        console.log("Done seeding db")
+
 
     } catch (err) {
-        console.error("Error toggling like:", err);
+        console.error("Error seeding db:", err);
         return NextResponse.json(
-            { error: "Failed to save or unsave listing" },
+            { error: "Failed to seed Database" },
             { status: 500 }
         );
     }
