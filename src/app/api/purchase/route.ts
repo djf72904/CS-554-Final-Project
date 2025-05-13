@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
                 listingId: postId,
                 credits: balance,
                 amount: 0,
-                status: 'completed',
+                status: 'complete',
                 paymentMethod: balanceType
             })
 
@@ -46,13 +46,14 @@ export async function POST(request: NextRequest) {
                     listingId: postId,
                     amount: balance,
                     credits: 0,
-                    status: 'completed',
+                    status: 'complete',
                     paymentMethod: balanceType
                 })
 
             transactionId = _id
         }
 
+        
         const imagePath = path.join(process.cwd(), "public", "listings", post.images?.[0] || "");
         if (post.images?.[0]) {
             try {
