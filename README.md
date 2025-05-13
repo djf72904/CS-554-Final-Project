@@ -4,17 +4,34 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 First, install the necessary packages, by running: 
 ```bash
-npm install --legacy-peer-deps
+# recommended
+npm install --force  
+
 # or
-npm install --force
+npm install --legacy-peer-deps
 ```
 
-Then run the development server:
+Next, install RabbitMQ and make sure it is running:
+```bash
+# TODO
+```
+
+Then, run the development server:
 
 ```bash
+# recommended
 npm run dev
+
 # or
 npx next dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Lastly, open another terminal and seed the database:
+```bash
+npm rn seed
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. To be safe make sure to check the console for the link to the server in case there is already a process running on port:3000  
+***
+**IMPORTANT FOR TESTING**  
+When testing this website, make sure to have two users with a Stevens account available. This is because only valid .edu emails are allowed to make accounts. Therefore, if interactions between users want to be seen to the true potential, it would be best to be done in this way.
