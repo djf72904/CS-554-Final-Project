@@ -20,7 +20,7 @@ export async function addSoldOverlay(inputPath: string): Promise<string> {
         .font(fontPath, 72)
         .gravity("Center")
         .drawText(0, 0, 'SOLD')
-        .write(outputPath, (err) => {
+        .write(outputPath, (err: any) => {
           if (err) return reject(err);
           resolve(`public/listings/${filename}`);
         });
