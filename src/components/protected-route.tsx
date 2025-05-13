@@ -29,7 +29,7 @@ export default function ProtectedRoute({ children }: Readonly<{ children: React.
   }
 
   if (!user) {
-    return unauthorized()
+    router.push("/login")
   }
 
   return <>{children}</>
