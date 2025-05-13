@@ -295,8 +295,6 @@ export async function POST(request: NextRequest) {
                     rating: finalRating,
                 }
 
-                console.log(finalRating)
-
                await updateUserProfile(currSellerId, newRatingData)
             }
         }
@@ -305,6 +303,7 @@ export async function POST(request: NextRequest) {
 
         console.log("Done seeding db")
 
+        return NextResponse.json({ status: 200 })
 
     } catch (err) {
         console.error("Error seeding db:", err);
