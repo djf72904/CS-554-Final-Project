@@ -12,17 +12,13 @@ export async function POST(req: Request) {
     }
 
     const { token } = await req.json();
-    const decoded = await auth.verifyIdToken(token)
-
-
+    const decoded = await auth.verifyIdToken(aToken)
 
     await dbConnect();
     const user = await User.findOne({ uid: decoded.uid });
     if (!user || !user.totpSecret) return new Response('Unauthorized', { status: 401 });
 
     const isValid = authenticator.check(token, decryptSecret(user.totpSecret));
-
-    console.log(token, decryptSecret(user.totpSecret))
 
     if(isValid){
         const encrypted = user.totpSecret;

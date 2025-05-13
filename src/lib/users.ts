@@ -53,7 +53,7 @@ export async function createUserProfile(user: any): Promise<any> {
     updatedAt: userProfile.updatedAt,
     balance: userProfile.balance,
     rating: userProfile.rating,
-    likedPosts: userProfile.likedPosts,
+    likedPosts: userProfile.likedPosts ?? [],
     mfaEnabled: userProfile.mfaEnabled
   }
 }
@@ -95,12 +95,6 @@ export async function setMfaSecret(userId: string, secret: string) {
   await User.updateOne({ uid: userId }, { $set: { totpSecret: encrypted, mfaEnabled: true } })
 }
 
-export async function getMfaSecret(userId: string) {
-  await dbConnect()
-  const user = await User.findOne({ uid: userId })
-  if (!user?.totpSecret) return null
-  return decryptSecret(user.totpSecret)
-}
 
 export async function disableMfa(userId: string) {
   await dbConnect()

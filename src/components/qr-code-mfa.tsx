@@ -36,6 +36,7 @@ export default function QRCodeDialog({ qrCode, secret, uid, onVerified }: Readon
     const handleVerify = async () => {
         setIsVerifying(true)
 
+        console.log(await user?.getIdToken())
         try {
             const res = await fetch('/api/mfa/verify', {
                 method: 'POST',

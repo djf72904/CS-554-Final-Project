@@ -33,9 +33,18 @@ export default async function ProfilePage() {
         return 0;
     })
     const reviews = JSON.parse(await fetchReviewsForUser(user?.id)) ?? []
+
+    console.log(user.id)
+
     const userProfile = (await getUserProfile(user.id)) ?? null
 
-    console.log(savedPosts)
+    console.log({
+        reviews,
+        listings,
+        transactions,
+        savedPosts,
+        userProfile
+    })
 
     return (
         <ProtectedRoute>

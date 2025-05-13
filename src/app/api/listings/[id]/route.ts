@@ -25,8 +25,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const decodedToken = await auth.verifyIdToken(token)
-    const userId = decodedToken.uid
+    await auth.verifyIdToken(token)
 
     const existingListing = await getListing((await params).id)
 

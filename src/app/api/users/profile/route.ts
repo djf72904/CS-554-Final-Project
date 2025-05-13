@@ -39,6 +39,8 @@ export async function POST(request: NextRequest) {
 
     const decodedToken = await auth.verifyIdToken(token)
     const userId = decodedToken.uid
+
+
     const existingProfile = await getUserProfile(userId)
     if (existingProfile) {
       return NextResponse.json({ user: existingProfile }, { status: 200 })

@@ -34,11 +34,11 @@ export const ListingItem = ({item, isLiked}: {
             });
             const fullUserInfo = (await getResponse.json()).user
             if(staticIsSaved){
-                const removed = fullUserInfo.likedPosts.indexOf(item._id)
-                fullUserInfo.likedPosts.splice(removed, 1)
+                const removed = fullUserInfo?.likedPosts.indexOf(item._id)
+                fullUserInfo?.likedPosts.splice(removed, 1)
             }
             else{
-                fullUserInfo.likedPosts.push(item._id)
+                fullUserInfo?.likedPosts.push(item._id)
             }
             const patchResponse = await fetch("/api/users/profile", {
                 method: "PATCH",

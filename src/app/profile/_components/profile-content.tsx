@@ -38,7 +38,6 @@ export default function ProfileContent({
 
   const router = useRouter()
 
-
   return (
     <div className="flex flex-col md:flex-row gap-8">
       <Card className="flex-1">

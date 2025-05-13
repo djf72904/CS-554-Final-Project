@@ -29,6 +29,7 @@ export default function MfaPromptDialog({
     const [isVerifying, setIsVerifying] = useState(false)
     const { toast } = useToast()
     const {pendingMfaUser} = useAuth()
+    const [status, setStatus] = useState<'success' | 'fail' | null>(null);
 
     const handleVerify = async () => {
 
@@ -42,14 +43,16 @@ export default function MfaPromptDialog({
             })
 
             if ((await res.json()).success) {
-
                 toast({ title: 'MFA Verified', description: 'Welcome back!' })
+                setStatus('success')
                 onSuccess()
             } else {
                 toast({ title: 'Invalid Code', description: 'Try again.', variant: 'destructive' })
+                setStatus('fail')
             }
         } catch (e) {
             toast({ title: 'Verification error', variant: 'destructive' })
+            setStatus('fail')
         } finally {
             setIsVerifying(false)
         }
@@ -63,6 +66,11 @@ export default function MfaPromptDialog({
                     <DialogDescription>
                         Enter your 6-digit authentication code to complete sign in.
                     </DialogDescription>
+                    {
+                        status === 'fail' && <p className={'text-center'}>
+                            Code Invalid
+                        </p>
+                    }
                 </DialogHeader>
 
                 <div className="w-full flex justify-center mb-4">
