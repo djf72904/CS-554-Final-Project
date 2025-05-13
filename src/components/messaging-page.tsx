@@ -146,7 +146,7 @@ export default function MessagingPage() {
                 }
 
                 const ws = new WebSocket(
-                    `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/api/messages/socket?token=${token}`,
+                    `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.hostname}4000?token=${token}`,
                 )
 
                 ws.onopen = () => {
