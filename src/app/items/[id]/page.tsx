@@ -23,6 +23,9 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
   }
 
   const seller = await getUserById(item.userId)
+
+  console.log(await getUserById(item.userId))
+
   if(!seller){
     return notFound()
   }

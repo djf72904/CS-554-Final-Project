@@ -16,6 +16,11 @@ Next, install RabbitMQ and make sure it is running:
 # TODO
 ```
 
+Next, run the utility function for handling messages:
+```bash
+npm run run-msg-broker
+```
+
 Then, run the development server:
 
 ```bash
@@ -28,7 +33,7 @@ npx next dev
 
 Lastly, open another terminal and seed the database:
 ```bash
-npm rn seed
+npm run seed
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. To be safe make sure to check the console for the link to the server in case there is already a process running on port:3000  

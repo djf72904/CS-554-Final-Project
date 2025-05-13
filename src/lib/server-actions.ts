@@ -68,6 +68,7 @@ export async function searchListings(query: string, base_url: string) {
 export async function getUserById(userId: string) {
   await dbConnect()
 
+
   const user = await User.findOne({ uid: userId }).lean()
   return user ? JSON.parse(JSON.stringify(user)) : null
 }

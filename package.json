@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node src/scripts/seed.ts"
+    "seed": "npx tsx src/scripts/seed.ts",
+    "run-msg-broker": "npx tsx tasks/consumeMessage.ts",
+    "run-rabbit": "CONF_ENV_FILE=\"/opt/homebrew/etc/rabbitmq/rabbitmq-env.conf\" /opt/homebrew/opt/rabbitmq/sbin/rabbitmq-server"
   },
   "dependencies": {
     "@aws-sdk/credential-providers": "latest",
@@ -78,8 +80,8 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.6",
-    "zod": "^3.24.1",
-    "ws": "^8.18.2"
+    "ws": "^8.18.2",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.7",

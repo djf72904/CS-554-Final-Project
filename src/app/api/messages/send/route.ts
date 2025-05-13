@@ -6,6 +6,8 @@ export async function POST(req: Request) {
     const token = req.headers.get("Authorization")?.split("Bearer ")[1]
     if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
+
+
     try {
         const decoded = await auth.verifyIdToken(token)
         const body = await req.json()

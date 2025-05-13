@@ -13,17 +13,45 @@ import {capitalizeFirstLetter} from "@/lib/text";
 import RatingPrompt from "@/components/rating-prompt";
 import {SellerRatingDialog} from "@/components/seller-rating-dialog";
 import {useEffect, useState} from "react";
+import {useAuth} from "@/context/auth-context";
 
 export default function PurchaseConfirmation({transaction, seller}: Readonly<{ transaction: any, seller: any }>) {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [rating, setRating] = useState<number>(seller.rating)
 
+    const {user} = useAuth()
+    const router = useRouter()
+
     useEffect(()=>{
         setTimeout(()=>{
             setIsDialogOpen(true)
         }, 2000)
     }, [])
+
+    const handleClick = async () => {
+        if (!user) return alert("Please log in to message the seller")
+        console.log({
+            user, seller
+        })
+
+        await fetch("/api/messages/send", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${await user.getIdToken()}`,
+            },
+            body: JSON.stringify({
+                from: user.uid,
+                to: seller.uid,
+                text: "Hello!"
+            }),
+        }).then(async r=>{
+            if((await r.json()).success){
+                router.push(`/messages`)
+            }
+        })
+    }
 
     return (
         <div className="container mx-auto px-4 py-8 md:py-16">
@@ -259,10 +287,8 @@ export default function PurchaseConfirmation({transaction, seller}: Readonly<{ t
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button asChild className="w-full">
-                                <Link href={`/messages/${transaction.listingId.userId}`}>
-                                    Message Seller <ArrowRight className="ml-2 h-4 w-4" />
-                                </Link>
+                            <Button asChild className="w-full" onClick={handleClick}>
+                                <p>Message Seller <ArrowRight className="ml-2 h-4 w-4" /></p>
                             </Button>
                         </CardFooter>
                     </Card>

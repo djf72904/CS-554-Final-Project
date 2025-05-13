@@ -1,6 +1,7 @@
 import amqp from "amqplib"
 import mongoose from "mongoose"
 import {createMessage} from "@/lib/messages"
+//@ts-ignore
 import { WebSocketServer, WebSocket } from "ws";
 import {createServer} from "http";
 import url from "url";
