@@ -85,7 +85,7 @@ export async function updateUserProfile(userId: any, data: Partial<UserProfile>)
 export async function getSavedListingsFromUser(userId: string): Promise<any | null> {
   await dbConnect()
   const currUser = (await getUserProfile(userId))
-  const savedListings = currUser.likedPosts
+  const savedListings = currUser?.likedPosts
   return savedListings?.length ? JSON.stringify(savedListings) : null
 }
 
