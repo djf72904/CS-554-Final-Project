@@ -15,6 +15,7 @@ export interface MongoListingType extends Document {
   status: "active" | "sold" | "pending"
   createdAt: Date
   updatedAt: Date
+  overlaySold: string
 }
 
 const ListingSchema: Schema = new Schema({
@@ -37,6 +38,10 @@ const ListingSchema: Schema = new Schema({
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  overlaySold: {
+    type: String,
+    default: null,
+  },
 })
 
 ListingSchema.index({ title: "text", description: "text" })

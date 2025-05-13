@@ -28,7 +28,6 @@ export default async function ProfilePage() {
     const rawSaved = JSON.parse(await convertListingsToObj(await getSavedListingsFromUser(user?.id))) ?? [];
     const savedPosts = [...rawSaved].sort((a, b) => {
       if (a.status === "active" && b.status === "complete") return -1;
-      console.log(a.status, b.status);
       if (a.status === "complete" && b.status === "active") return 1;
       return 0;
     })

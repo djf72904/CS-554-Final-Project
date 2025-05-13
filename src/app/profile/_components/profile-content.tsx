@@ -122,7 +122,7 @@ export default function ProfileContent({
                   <CardHeader className="p-0">
                     <div className="aspect-square relative">
                       <Image
-                        src={item.images?.[0] || "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"}
+                        src={(item.status === "sold" && item.overlaySold) ? item.overlaySold : item.images?.[0] || "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"}
                         alt={item.title}
                         fill
                         className="object-cover rounded-t-lg"
@@ -248,7 +248,8 @@ export default function ProfileContent({
                       price: (saved.price),
                       title: (saved.title),
                       status: (saved.status),
-                      transactionId: ""
+                      transactionId: "",
+                      overlaySold: (saved.overlaySold),
                     }} />
                   </div>
                 ))}

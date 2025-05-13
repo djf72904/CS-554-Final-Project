@@ -6,21 +6,23 @@ import { v4 as uuidv4 } from 'uuid';
 
 const GraphicsMagick = gm.subClass({ imageMagick: false });
 
-export async function addSoldOverlay(imageUrl: string): Promise<string> {
-    const inputPath = path.join(process.cwd(), 'public', 'listings', imageUrl.replace(/^\/+/, ''));
+export async function addSoldOverlay(inputPath: string): Promise<string> {
+    console.log("addSoldOverlay called by:", inputPath);
     const filename = `${uuidv4()}_sold.jpg`;
     const outputPath = path.join(process.cwd(), 'public', 'listings', filename);
-  
+    const fontPath = path.join(process.cwd(), 'public', 'Helvetica-Bold.ttf');
+
     return new Promise((resolve, reject) => {
       GraphicsMagick(inputPath)
         .fill('#FF000088') 
         .drawRectangle(0, 0, 512, 512)
         .fill('#FFFFFF')
-        .font('Helvetica', 72)
-        .drawText(100, 300, 'SOLD')
-        .write(outputPath, (err: any) => {
+        .font(fontPath, 72)
+        .gravity("Center")
+        .drawText(0, 0, 'SOLD')
+        .write(outputPath, (err) => {
           if (err) return reject(err);
-          resolve(`/listings/${filename}`);
+          resolve(`public/listings/${filename}`);
         });
     });
   }

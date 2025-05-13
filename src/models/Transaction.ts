@@ -41,8 +41,8 @@ const TransactionSchema: Schema = new Schema({
 
 TransactionSchema.virtual("buyer", {
   ref: "User",
-  localField: "buyerId",   // the string UID in your transaction
-  foreignField: "uid",     // the field on User you match against
+  localField: "buyerId",  
+  foreignField: "uid",   
   justOne: true
 });
 

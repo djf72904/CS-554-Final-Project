@@ -16,6 +16,7 @@ interface ListingCardProps {
     school: string
     status: string
     transactionId: string
+    overlaySold?: string
   }
 }
 

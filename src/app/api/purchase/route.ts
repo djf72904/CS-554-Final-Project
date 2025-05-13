@@ -59,15 +59,21 @@ export async function POST(request: NextRequest) {
             transactionId = _id
         }
 
-        
-        const imagePath = path.join(process.cwd(), "public", "listings", post.images?.[0] || "");
-        if (post.images?.[0]) {
-            try {
-                await addSoldOverlay(imagePath);
-            } catch (err) {
-                console.log("no sold image on item");
+        try {
+            if (post.images?.[0]) {
+                const inputImagePath = path.join(process.cwd(), "public", post.images[0]);
+                const overlayPath = await addSoldOverlay(inputImagePath);
+                post.overlaySold = overlayPath;
+                console.log('it got here');
+            } else {
+                console.log('image not found');
             }
-        };
+        } catch (err) {
+            console.log('it did not work', err);
+        }
+
+        console.log(post.overlaySold);
+        await post.save();
 
         return NextResponse.json({ transactionId })
 

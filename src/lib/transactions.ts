@@ -3,7 +3,8 @@ import dbConnect from "./mongoose"
 import Transaction, { type MongoTransactionType } from "@/models/Transaction"
 import User from "@/models/User"
 import Listing from "@/models/Listing"
-import {UserProfile} from "@/lib/users";
+import { UserProfile } from "@/lib/users";
+import { addSoldOverlay } from "./image-processor"
 
 export type TransactionData = MongoTransactionType
 
@@ -150,12 +151,12 @@ export async function updateTransaction(transactionId: string, data: Partial<Tra
     updatedAt: new Date(),
   }
 
-  const transaction = await Transaction.findOneAndUpdate({_id: transactionId}, {$set: updateData}, {new: true}).lean()
+  const transaction = await Transaction.findOneAndUpdate({ _id: transactionId }, { $set: updateData }, { new: true }).lean()
 
   return transaction as unknown as TransactionData | null
 }
 
-export async function getAllTransactions() : Promise<any | null> {
+export async function getAllTransactions(): Promise<any | null> {
   await dbConnect()
 
   const transactions = await Transaction.find({})
