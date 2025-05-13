@@ -9,6 +9,7 @@ export default function ContactSeller({ sellerId }: Readonly<{ sellerId: string 
     const { user } = useAuth()
     const router = useRouter()
     const [message, setMessage] = useState("")
+    const isOwnListing = user?.uid === sellerId
 
     const handleClick = async () => {
         if (!user) return alert("Please log in to message the seller")
@@ -33,16 +34,19 @@ export default function ContactSeller({ sellerId }: Readonly<{ sellerId: string 
 
     return (
         <div>
-        <textarea
-            className="w-full p-2 border rounded"
-            rows={3}
-            placeholder="Write a message to the seller..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-        />
-        <Button className="w-full mt-4" onClick={handleClick}>
-            Message Seller
-        </Button>
+            {!isOwnListing &&(
+                <textarea
+                className="w-full p-2 border rounded"
+                rows={3}
+                placeholder="Write a message to the seller..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+            />
+            )}
+            <Button className="w-full mt-4" onClick={handleClick} disabled={isOwnListing}>
+                Message Seller
+            </Button>
+
         </div>
     )
 }

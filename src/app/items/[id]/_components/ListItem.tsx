@@ -7,7 +7,7 @@ import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import {UserRating} from "@/app/items/_components/Rating";
 import {MongoUserType} from "@/models/User";
 import {MongoPaymentMethodsType} from "@/models/PaymentMethods";
-import ContactSeller from "@/components/ContactSeller";
+import ContactSeller from "@/components/contact-seller";
 
 export const ListItem = ({
     item,
