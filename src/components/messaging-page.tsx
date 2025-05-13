@@ -169,7 +169,7 @@ export default function MessagingPage() {
                 }
 
                 ws.onerror = (error) => {
-                    console.error("WebSocket error:", error)
+                    //console.error("WebSocket error:", error)
                 }
 
                 ws.onclose = () => {
@@ -182,8 +182,11 @@ export default function MessagingPage() {
                 console.error("Error connecting to WebSocket:", error)
             }
         }
-
-        connectWebSocket()
+        try {
+            connectWebSocket()
+        }catch(error){
+            console.error("Could not connect to WebSocket:", error)
+        }
 
         return () => {
             if (wsRef.current) {
