@@ -55,7 +55,7 @@ export async function completeTransaction(transactionId: string): Promise<Transa
       throw new Error("Transaction is not in pending status")
     }
 
-    transaction.status = "completed"
+    transaction.status = "complete"
     await transaction.save({ session })
 
     await Listing.findByIdAndUpdate(transaction.listingId, { $set: { status: "sold" } }, { session })

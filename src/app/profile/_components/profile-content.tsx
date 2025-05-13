@@ -127,12 +127,11 @@ export default function ProfileContent({
                         fill
                         className="object-cover rounded-t-lg"
                       />
-                      <div
-                        className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-semibold ${item.status === "active" ? "bg-emerald-400 text-white" : "bg-gray-500 text-white"
-                          }`}
-                      >
-                        {item.status === "active" ? "Active" : "Sold"}
-                      </div>
+                      {item.status === "active" && (
+                        <div className="absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-semibold bg-emerald-400 text-white">
+                          Active
+                        </div>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent className="p-4">

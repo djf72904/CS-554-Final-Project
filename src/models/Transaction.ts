@@ -9,7 +9,7 @@ export interface MongoTransactionType extends Document {
   amount: number
   credits: number
   paymentMethod: "cash" | "credit"
-  status: "pending" | "completed" | "cancelled"
+  status: "pending" | "complete" | "cancelled"
   createdAt: Date
   updatedAt: Date
   rating: number
@@ -29,7 +29,7 @@ const TransactionSchema: Schema = new Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "completed", "cancelled"],
+    enum: ["pending", "complete", "cancelled"],
     default: "pending",
     index: true,
   },

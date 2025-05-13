@@ -32,7 +32,7 @@ export const ListingItem = ({item, isLiked}: {
                     "Authorization": `Bearer ${await user?.getIdToken()}`
                 }
             });
-            const fullUserInfo = JSON.parse((await getResponse.json()).user)
+            const fullUserInfo = (await getResponse.json()).user
             if(staticIsSaved){
                 const removed = fullUserInfo.likedPosts.indexOf(item._id)
                 fullUserInfo.likedPosts.splice(removed, 1)
