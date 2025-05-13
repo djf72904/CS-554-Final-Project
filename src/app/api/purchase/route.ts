@@ -7,6 +7,12 @@ import { addSoldOverlay } from "@/lib/image-processor";
 import path from "path";
 
 export async function POST(request: NextRequest) {
+    const token = request.headers.get("Authorization")?.split("Bearer ")[1]
+
+    if (!token) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     await dbConnect();
 
     try {

@@ -23,6 +23,9 @@ export default async function ItemPage({ params }: { params: { id: string } }) {
   }
 
   const seller = await getUserById(item.userId)
+  if(!seller){
+    return notFound()
+  }
   const user = await getCurrentUser()
 
   const payment_methods = JSON.parse(await getPaymentMethods(user?.id!)) ?? []

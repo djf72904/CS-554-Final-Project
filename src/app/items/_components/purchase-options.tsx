@@ -121,6 +121,7 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
+                            "Authorization": `Bearer ${await user?.getIdToken()}`
                         },
                         body: JSON.stringify({
                             data: {
@@ -142,6 +143,7 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": `Bearer ${await user?.getIdToken()}`
                     },
                     body: JSON.stringify({
                         buyerId: user?.uid,

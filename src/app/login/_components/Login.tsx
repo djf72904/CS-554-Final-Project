@@ -18,7 +18,7 @@ export const Login = () => {
 
     useEffect(() => {
         if (!loading && user) {
-            router.push("/")
+            router.push("/profile")
         }
     }, [user, loading, router])
 

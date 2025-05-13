@@ -156,6 +156,7 @@ export const ProfileEdit = ({payment_methods, oldDisplayName}: {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                "Authorization": `Bearer ${await user?.getIdToken()}`
             },
             body: JSON.stringify({data: {
                 userId: user?.uid,
@@ -406,6 +407,7 @@ export const ProfileEdit = ({payment_methods, oldDisplayName}: {
                                                                         method: 'DELETE',
                                                                         headers: {
                                                                             'Content-Type': 'application/json',
+                                                                            "Authorization": `Bearer ${await user?.getIdToken()}`
                                                                         },
                                                                         body: JSON.stringify({ payment_method_id: method._id }),
                                                                     }).then(res=>{

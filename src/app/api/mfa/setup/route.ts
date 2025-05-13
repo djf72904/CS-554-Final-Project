@@ -4,9 +4,17 @@ import qrcode from 'qrcode';
 import User from '@/models/User';
 import dbConnect from '@/lib/mongoose';
 import { encryptSecret } from '@/lib/crypto';
+import {NextResponse} from "next/server";
 
 export async function POST(req: Request) {
+    const token = req.headers.get("Authorization")?.split("Bearer ")[1]
+
+    if (!token) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const { uid } = await req.json();
+
 
     await dbConnect();
 

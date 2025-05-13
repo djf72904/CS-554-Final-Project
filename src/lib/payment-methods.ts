@@ -1,6 +1,6 @@
 import PaymentMethods, {MongoPaymentMethodsType} from "@/models/PaymentMethods";
 import dbConnect from "@/lib/mongoose";
-import CryptoJS from "crypto-js"
+import CryptoJS from "crypto-es"
 
 export const getPaymentMethods = async (userId: string) => {
     await dbConnect()
@@ -15,7 +15,8 @@ export const getPaymentMethods = async (userId: string) => {
             cardNumber: (Buffer.from(CryptoJS.AES.decrypt(pm.cardNumber, pm.userId).toString(), "hex")).toString(),
             expirationDate: (Buffer.from(CryptoJS.AES.decrypt(pm.expirationDate, pm.userId).toString(), "hex")).toString(),
             cvv: (Buffer.from(CryptoJS.AES.decrypt(pm.cvv, pm.userId).toString(), "hex")).toString(),
-            last4: pm.last4
+            last4: pm.last4,
+            __v: 0
         }
         paymentMethods[i] = decryptedData;
     }

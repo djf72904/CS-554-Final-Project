@@ -21,9 +21,9 @@ export default function MfaPromptDialog({
                                             onSuccess,
                                         }: Readonly<{
     open: boolean
-    onClose: () => void
+    onClose: any
     uid: string
-    onSuccess: () => void
+    onSuccess: any
 }>) {
     const [code, setCode] = useState('')
     const [isVerifying, setIsVerifying] = useState(false)

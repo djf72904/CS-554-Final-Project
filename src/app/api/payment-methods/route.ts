@@ -6,6 +6,12 @@ import {createPaymentMethod} from "@/lib/payment-methods";
 import PaymentMethods, {MongoPaymentMethodsType} from "@/models/PaymentMethods";
 
 export async function POST(request: NextRequest) {
+    const token = request.headers.get("Authorization")?.split("Bearer ")[1]
+
+    if (!token) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     await dbConnect();
 
     try {

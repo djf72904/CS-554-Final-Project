@@ -1,6 +1,8 @@
 'use server'
+//@ts-ignore
 import gm from 'gm';
 import os from 'os';
+//@ts-ignore
 import { v4 as uuidv4 } from 'uuid';
 import { promises as fs } from "fs";
 import path from "path";
@@ -23,7 +25,7 @@ export async function imageDownloadUrls(images: File[]): Promise<string[]> {
                 .gravity("Center")
                 .extent(512, 512)
                 .noProfile()
-                .write(outputPath, (err) => {
+                .write(outputPath, (err: any) => {
                     if (err) return reject(err)
                     resolve()
                 });

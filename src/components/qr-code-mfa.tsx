@@ -17,6 +17,7 @@ import Image from 'next/image'
 import React, {useEffect, useState} from 'react'
 import {OTPInput} from "input-otp";
 import {InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot} from "@/components/ui/input-otp";
+import {useAuth} from "@/context/auth-context";
 
 interface QRCodeDialogProps {
     qrCode: string
@@ -30,6 +31,7 @@ export default function QRCodeDialog({ qrCode, secret, uid, onVerified }: Readon
     const [code, setCode] = useState('')
     const [isVerifying, setIsVerifying] = useState(false)
     const { toast } = useToast()
+    const {user} = useAuth()
 
     const handleVerify = async () => {
         setIsVerifying(true)
@@ -37,7 +39,10 @@ export default function QRCodeDialog({ qrCode, secret, uid, onVerified }: Readon
         try {
             const res = await fetch('/api/mfa/verify', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${await user?.getIdToken()}`
+                },
                 body: JSON.stringify({ uid, token: code }),
             })
 

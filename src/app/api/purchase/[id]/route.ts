@@ -4,6 +4,12 @@ import {getAllTransactions, getTransaction, updateTransaction} from "@/lib/trans
 import {updateUserProfile, getUserProfile} from "@/lib/users";
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+    const token = request.headers.get("Authorization")?.split("Bearer ")[1]
+
+    if (!token) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     try {
         const existingTransaction = await getTransaction((await params).id)
 

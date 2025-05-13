@@ -6,6 +6,12 @@ import {createTransaction} from "@/lib/transactions";
 import Transaction from "@/models/Transaction";
 
 export async function POST(request: NextRequest) {
+    const token = request.headers.get("Authorization")?.split("Bearer ")[1]
+
+    if (!token) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     await dbConnect();
 
     try {

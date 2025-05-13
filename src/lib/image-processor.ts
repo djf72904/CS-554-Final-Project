@@ -1,7 +1,8 @@
+//@ts-ignore
 import gm from 'gm';
 import path from 'path';
+//@ts-ignore
 import { v4 as uuidv4 } from 'uuid';
-import { promises as fs } from 'fs';
 
 const GraphicsMagick = gm.subClass({ imageMagick: false });
 
@@ -17,7 +18,7 @@ export async function addSoldOverlay(imageUrl: string): Promise<string> {
         .fill('#FFFFFF')
         .font('Helvetica', 72)
         .drawText(100, 300, 'SOLD')
-        .write(outputPath, (err) => {
+        .write(outputPath, (err: any) => {
           if (err) return reject(err);
           resolve(`/listings/${filename}`);
         });

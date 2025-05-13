@@ -5,6 +5,11 @@ import dbConnect from "@/lib/mongoose";
 import {NextResponse} from "next/server";
 
 export async function POST(req: Request) {
+    const aToken = req.headers.get("Authorization")?.split("Bearer ")[1]
+    if (!aToken) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const { uid, token } = await req.json();
 
     await dbConnect();

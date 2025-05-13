@@ -22,8 +22,8 @@ interface SellerRatingDialogProps {
     sellerName: string
     transactionId: string
     isOpen: boolean
-    onOpenChange: (open: boolean) => void
-    onRatingSubmitted: (rating: number) => void
+    onOpenChange: any
+    onRatingSubmitted: any
 }
 
 export function SellerRatingDialog({
@@ -78,6 +78,7 @@ export function SellerRatingDialog({
                         body: JSON.stringify({rating: rating, review: review.trim()}),
                         headers: {
                             "Content-Type": "application/json",
+                            "Authorization": `Bearer ${await user?.getIdToken()}`
                         }
                     })
                 return await patchResponse.json()
