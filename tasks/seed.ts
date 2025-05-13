@@ -20,6 +20,11 @@ async function seedDatabase() {
             email: "dprahlad@stevens.edu",
             school: "Stevens Institute of Technology",
             credits: 100,
+            rating: 0,
+            balance: 1000,
+            likedPosts: [],
+            mfaEnabled: false,
+            totpSecret: null
         })
 
         const user2 = await User.create({
@@ -28,6 +33,11 @@ async function seedDatabase() {
             email: "acastil4@stevens.edu",
             school: "Stevens Institute of Technology",
             credits: 50,
+            rating: 0,
+            balance: 1000,
+            likedPosts: [],
+            mfaEnabled: false,
+            totpSecret: null
         })
 
         const user3 = await User.create({
@@ -36,6 +46,11 @@ async function seedDatabase() {
             email: "jpatter2@stevens.edu",
             school: "Stevens Institute of Technology",
             credits: 500,
+            rating: 0,
+            balance: 1000,
+            likedPosts: [],
+            mfaEnabled: false,
+            totpSecret: null
         })
 
         const user4 = await User.create({
@@ -44,6 +59,11 @@ async function seedDatabase() {
             email: "dfaulhab@stevens.edu",
             school: "Stevens Institute of Technology",
             credits: 275,
+            rating: 0,
+            balance: 1000,
+            likedPosts: [],
+            mfaEnabled: false,
+            totpSecret: null
         })
 
         // Seed Listings
@@ -56,9 +76,9 @@ async function seedDatabase() {
                 price: 25,
                 credits: 10,
                 images: [],
-                userId: user1.uid,
-                school: user1.school,
-                status: "completed",
+                userId: user2.uid,
+                school: user2.school,
+                status: "active",
                 pickup_location: "UCC",
             }
         )
@@ -85,8 +105,8 @@ async function seedDatabase() {
                 price: 50,
                 credits: 20,
                 images: [],
-                userId: user1.uid,
-                school: user1.school,
+                userId: user4.uid,
+                school: user4.school,
                 status: "pending",
                 pickup_location: "UCC",
             },
@@ -104,17 +124,6 @@ async function seedDatabase() {
                 pickup_location: "UCC",
             }
         ])
-        await Transaction.create({
-            buyerId: user2.uid,
-            sellerId: user1.uid,
-            listingId: listing._id,
-            amount: listing.price,
-            credits: listing.credits,
-            paymentMethod: "cash",
-            status: "completed",
-            review: "Fast transaction, great product!",
-            rating: 5,
-        })
 
         console.log("Seeded users, listings, transaction")
     } catch (err) {

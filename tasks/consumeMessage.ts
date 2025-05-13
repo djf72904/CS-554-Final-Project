@@ -24,7 +24,7 @@ async function start() {
     await channel.consume(QUEUE, async (msg: any | null) => {
         if (msg !== null) {
             const message = JSON.parse(msg.content.toString())
-            console.log("📨 Received message:", message)
+            console.log("Received message:", message)
 
             try {
                 await createMessage({

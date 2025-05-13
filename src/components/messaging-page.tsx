@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {useAuth} from "@/context/auth-context";
-import {createMessage, getMessagesForUser} from "@/lib/messages";
+import {getMessagesForUser} from "@/lib/messages";
 import {User as FBUser} from '@firebase/auth'
 import {useRouter} from "next/navigation";
 
