@@ -44,7 +44,7 @@ export default function PurchaseConfirmation({transaction, seller}: Readonly<{ t
             body: JSON.stringify({
                 from: user.uid,
                 to: seller.uid,
-                text: "Hello!"
+                text: `Hello! I just purchased your ${transaction.listingId.title}. Would you like to schedule a time and place to meet up?`
             }),
         }).then(async r=>{
             if((await r.json()).success){
