@@ -22,8 +22,6 @@ export async function POST(req: Request) {
 
     const isValid = authenticator.check(token, decryptSecret(user.totpSecret));
 
-    console.log(token, decryptSecret(user.totpSecret))
-
     if(isValid){
         const encrypted = user.totpSecret;
         await User.updateOne(

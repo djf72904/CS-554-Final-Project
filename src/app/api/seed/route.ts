@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
         // Seed Users
         const user1 = await User.create({
             uid: "user-001",
-            displayName: "Divya Prahlad",
-            email: "dprahlad@stevens.edu",
+            displayName: "Adian Ruck",
+            email: "aruck1@stevens.edu",
             school: "Stevens Institute of Technology",
             credits: 100,
             rating: 0,
@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {
 
         const user2 = await User.create({
             uid: "user-002",
-            displayName: "Alyssa Castillo",
-            email: "acastil4@stevens.edu",
+            displayName: "John Doe",
+            email: "jdoe12@stevens.edu",
             school: "Stevens Institute of Technology",
             credits: 50,
             rating: 0,
@@ -57,8 +57,8 @@ export async function POST(request: NextRequest) {
 
         const user3 = await User.create({
             uid: "user-003",
-            displayName: "Jack Patterson",
-            email: "jpatter2@stevens.edu",
+            displayName: "Alex Jones",
+            email: "ajones123@stevens.edu",
             school: "Stevens Institute of Technology",
             credits: 500,
             rating: 0,
@@ -70,8 +70,8 @@ export async function POST(request: NextRequest) {
 
         const user4 = await User.create({
             uid: "user-004",
-            displayName: "Dylan Faulhaber",
-            email: "dfaulhab@stevens.edu",
+            displayName: "Nick Adams",
+            email: "nadams33@stevens.edu",
             school: "Stevens Institute of Technology",
             credits: 275,
             rating: 0,
