@@ -14,7 +14,7 @@ export async function addSoldOverlay(inputPath: string): Promise<string> {
 
     return new Promise((resolve, reject) => {
       GraphicsMagick(inputPath)
-        .fill('#FF000088') 
+        .fill('#80808088') 
         .drawRectangle(0, 0, 512, 512)
         .fill('#FFFFFF')
         .font(fontPath, 72)
@@ -22,7 +22,7 @@ export async function addSoldOverlay(inputPath: string): Promise<string> {
         .drawText(0, 0, 'SOLD')
         .write(outputPath, (err: any) => {
           if (err) return reject(err);
-          resolve(`public/listings/${filename}`);
+          resolve(`/listings/${filename}`);
         });
     });
   }
