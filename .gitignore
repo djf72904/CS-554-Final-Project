@@ -42,3 +42,7 @@ next-env.d.ts
 
 ./data
 ./dbdata
+
+# public folder
+/public/listings/*
+!public/listings/.gitkeep
