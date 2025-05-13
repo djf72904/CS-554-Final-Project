@@ -12,7 +12,7 @@ export default async function EditListItemPage({
 
     const user = await getCurrentUser()
     const data = await getListingById((await params).id)
-    if(data.sellerId !== user?.id){
+    if(data.userId !== user?.id){
         return unauthorized()
     }
 

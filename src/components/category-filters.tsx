@@ -9,7 +9,7 @@ import {searchListings} from "@/lib/server-actions";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {capitalizeFirstLetter} from "@/lib/text";
 
-export default function CategoryFilters({schools}: Readonly<{ schools: string[] }>) {
+export default function CategoryFilters({setListings}: Readonly<{ setListings: any }>) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const category = searchParams.get("category") || "all"
@@ -30,10 +30,6 @@ export default function CategoryFilters({schools}: Readonly<{ schools: string[] 
     router.push(`/?category=${category}&search=${search}`)
   }, [search, router])
 
-
-    const handleSchoolChange = (value: string) => {
-        router.push(`/?category=${category}&school=${value}`)
-    }
 
   return (
     <div className="flex justify-between w-full overflow-x-auto pb-4 no-scrollbar items-center">
@@ -153,18 +149,15 @@ export default function CategoryFilters({schools}: Readonly<{ schools: string[] 
           </TabsTrigger>
         </TabsList>
       </Tabs>
-      <Select onValueChange={handleSchoolChange} value={searchParams.get('school') ?? ''}>
-        <SelectTrigger id="category" className={'w-64 mr-4'}>
-          <SelectValue placeholder="Select a School" />
-        </SelectTrigger>
-        <SelectContent>
-          {
-            schools?.map(school=>{
-             return <SelectItem key={school} value={school}>{capitalizeFirstLetter(school)}</SelectItem>
-            })
-          }
-        </SelectContent>
-      </Select>
+      {
+        (search.length > 0 || (category.length > 0 && category !== 'all')) &&
+          <Button onClick={()=>{
+            setListings()
+            router.push(`/`)
+
+          }} variant={'ghost'}>Clear</Button>
+
+      }
       <form onSubmit={handleSearch} className={'flex space-x-2'}>
         <Input placeholder={'Search Listings By Name or School'} value={search} onChange={(e)=>setSearch(e.target.value)} className={'rounded-full w-72'}/>
         <Button type={'submit'}>Search</Button>

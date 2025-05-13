@@ -22,7 +22,7 @@ import {imageDownloadUrls} from "@/app/list-item/_utils/photo-handler";
 
 export default function ListItemForm() {
   const router = useRouter()
-  const { user, userProfile } = useAuth()
+  const { user, school } = useAuth()
   const [images, setImages] = useState<File[]>([])
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -80,6 +80,7 @@ export default function ListItemForm() {
     try {
       const imgUrls = await imageDownloadUrls(images)
 
+
       await createListingAction(
         {
           title: formData.title,
@@ -89,7 +90,7 @@ export default function ListItemForm() {
           price: Number.parseFloat(formData.price),
           credits: Number.parseInt(formData.credits),
           images: imgUrls,
-          school: userProfile?.school || "",
+          school: school || "School",
           pickup_location: formData.pickup_location,
         },
         user.uid,

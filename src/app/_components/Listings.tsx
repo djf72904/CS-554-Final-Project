@@ -26,8 +26,10 @@ export const HomeItemListings = ({base_listings, new_user}: {base_listings: any,
     }
 
     const getListingsBySchoolFn = async () => {
-        await getListingsBySchool(searchParams.get('school') ?? '')
+        return await getListingsBySchool(searchParams.get('school') ?? '')
     }
+
+
 
 
     useEffect(() => {
@@ -41,6 +43,8 @@ export const HomeItemListings = ({base_listings, new_user}: {base_listings: any,
     useEffect(() => {
         setWelcomeDialog(new_user)
     }, [new_user]);
+
+    const clearSelection = () => setListings(base_listings)
 
 
 
@@ -56,9 +60,7 @@ export const HomeItemListings = ({base_listings, new_user}: {base_listings: any,
             </DialogContent>
         </Dialog>
         <div className="container mx-auto px-4 py-4">
-            <CategoryFilters schools={Array.from(new Set(base_listings.map((listing: any)=>{
-                return listing.school
-            })))} />
+            <CategoryFilters setListings={clearSelection}/>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {(listings ?? base_listings).filter((listing: any)=>{
                     if(!searchParams.get('category') || searchParams.get('category') === 'all') {

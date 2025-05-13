@@ -11,7 +11,7 @@ export interface MongoListingType extends Document {
   userId: string
   school: string
   likes: string[]
-    pickup_location: string
+  pickup_location: string
   status: "active" | "sold" | "pending"
   createdAt: Date
   updatedAt: Date

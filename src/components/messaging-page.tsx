@@ -173,13 +173,13 @@ export default function MessagingPage() {
                 }
 
                 ws.onclose = () => {
-                    console.log("WebSocket disconnected")
+                    // console.log("WebSocket disconnected")
                     setTimeout(connectWebSocket, 5000)
                 }
 
                 wsRef.current = ws
             } catch (error) {
-                console.error("Error connecting to WebSocket:", error)
+                // console.error("Error connecting to WebSocket:", error)
             }
         }
         try {

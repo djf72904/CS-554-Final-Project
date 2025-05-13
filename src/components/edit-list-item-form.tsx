@@ -35,7 +35,7 @@ export default function EditListItemForm({
 }) {
 
   const router = useRouter()
-  const { user, userProfile } = useAuth()
+  const { user } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: data.title,
@@ -70,27 +70,49 @@ export default function EditListItemForm({
 
     setIsLoading(true)
 
+
     try {
+      const res = await fetch(`/api/listings/${data._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${await user?.getIdToken()}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to update listing");
+      }
 
       toast({
         title: "Success!",
         description: "Your item has been listed",
-      })
+      });
 
-      router.push("/")
+      router.push("/");
     } catch (error) {
-      console.error("Error creating listing:", error)
+      console.error("Error creating listing:", error);
       toast({
         title: "Error",
         description: "There was a problem listing your item. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   const handleDelete = async () => {
+
+    await fetch(`/api/listings/${data._id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${await user?.getIdToken()}`
+      }
+    });
   }
 
   return (

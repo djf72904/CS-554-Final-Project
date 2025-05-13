@@ -185,7 +185,7 @@ export default function ProfileContent({
           </TabsContent>
           <TabsContent value="reviews">
             <div className="text-left text-muted-foreground">
-              <p>Reviews from buyers</p>
+              {reviews?.length ? <p>Reviews from buyers</p> : <></>}
               {
                 reviews?.length ?
                   <div className={'flex flex-col space-y-4 mt-4'}>{reviews.map((tx: any, i: number) => (
@@ -226,10 +226,7 @@ export default function ProfileContent({
                     </div>
                   ))}
                   </div> : <div className="text-center text-muted-foreground py-8">
-                    <p className="mb-4">You haven't made any purchases yet.</p>
-                    <Link href="/">
-                      <Button>Browse Items</Button>
-                    </Link>
+                    <p className="mb-4">There are no reviews on you yet</p>
                   </div>
               }
             </div>
@@ -255,7 +252,7 @@ export default function ProfileContent({
               </div>
             ) : (
               <div className="text-center text-muted-foreground py-8">
-                <p className="mb-4">You haven't liked any listings yet.</p>
+                <p className="mb-4">You haven't saved any listings yet.</p>
                 <Link href="/">
                   <Button>Browse Items</Button>
                 </Link>
