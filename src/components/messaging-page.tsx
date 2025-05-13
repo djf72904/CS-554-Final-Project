@@ -201,28 +201,26 @@ export default function MessagingPage() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [messages])
 
+    async function fetchMessages() {
+        if (!user?.uid) return
+
+        try {
+            setLoading(true)
+            const fetchedMessages = JSON.parse(await getMessagesForUser(user.uid))
+            //@ts-ignore
+            console.log({fetchedMessages})
+
+            setMessages(fetchedMessages)
+            setError(null)
+        } catch (err) {
+            console.error("Error fetching messages:", err)
+            setError("Failed to load messages. Please try again.")
+        } finally {
+            setLoading(false)
+        }
+    }
 
     useEffect(() => {
-        async function fetchMessages() {
-            if (!user?.uid) return
-
-            try {
-                setLoading(true)
-                const fetchedMessages = JSON.parse(await getMessagesForUser(user.uid))
-                //@ts-ignore
-                console.log({fetchedMessages})
-
-                setMessages(fetchedMessages)
-                setError(null)
-            } catch (err) {
-                console.error("Error fetching messages:", err)
-                setError("Failed to load messages. Please try again.")
-            } finally {
-                setLoading(false)
-            }
-        }
-
-
         fetchMessages()
     }, [user])
 
@@ -249,7 +247,7 @@ export default function MessagingPage() {
                 if (new Date(message.createdAt) > new Date(existing.lastMessageDate)) {
                     existing.lastMessage = message.text
                     existing.lastMessageDate = message.createdAt
-                    if (isIncoming && message.read) {
+                    if (isIncoming && !message.read) {
                         existing.unreadCount += 1
                     }
                 }
@@ -371,6 +369,7 @@ export default function MessagingPage() {
                                             },
                                             body: JSON.stringify({participantId: conversation.participant.uid}),
                                         })
+                                        await fetchMessages()
                                     }
                                 } catch (err) {
                                     console.error("Failed to mark messages as read:", err)
