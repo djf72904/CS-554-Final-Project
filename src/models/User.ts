@@ -36,7 +36,7 @@ const UserSchema: Schema = new Schema({
 
 UserSchema.pre("save", function (next) {
   this.updatedAt = new Date()
-  this.rating = 5
+  this.rating = 0
   next()
 })
 

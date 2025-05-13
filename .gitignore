@@ -42,5 +42,3 @@ next-env.d.ts
 
 ./data
 ./dbdata
-
-/public/listings
