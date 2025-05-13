@@ -25,7 +25,7 @@ import {cn} from "@/lib/utils";
 import {capitalizeFirstLetter} from "@/lib/text";
 import {Avatar, AvatarFallback} from "@/components/ui/avatar";
 import {UserRating} from "@/app/items/_components/Rating";
-import ContactSeller from "@/components/ContactSeller";
+import ContactSeller from "@/components/contact-seller";
 import {DialogBody} from "next/dist/client/components/react-dev-overlay/ui/components/dialog";
 
 interface PurchaseOptionsProps {
