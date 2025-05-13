@@ -27,8 +27,6 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Post not found" }, { status: 404 });
         }
 
-        //TODO
-
     } catch (err) {
         console.error("Error toggling like:", err);
         return NextResponse.json(

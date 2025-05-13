@@ -1,14 +1,21 @@
-import mongoose from "mongoose"
-import User from "@/models/User"
-import Listing from "@/models/Listing"
+import {NextRequest, NextResponse} from "next/server";
+import dbConnect from "@/lib/mongoose";
+import User from "@/models/User";
+import Listing from "@/models/Listing";
 
-async function seedDatabase() {
+export async function POST(request: NextRequest) {
+
+    const token = request.headers.get("Authorization")?.split("Bearer ")[1]
+
+    if (!token && token !== 'bbae9587-5b23-4cd0-9411-c42a361a6f10') {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+
+    await dbConnect();
+
     try {
-        const uri = "mongodb://localhost:27017/"
-        await mongoose.connect(uri)
-        console.log("Connected to MongoDB: test")
 
-        //Clear old data
         await User.deleteMany({})
         await Listing.deleteMany({})
 
@@ -121,14 +128,12 @@ async function seedDatabase() {
             }
         ])
 
-        console.log("Seeded users, listings,")
+
     } catch (err) {
-        console.error("Error seeding database:", err)
-    } finally {
-        await mongoose.disconnect()
-        console.log("Disconnected")
-        process.exit(0)
+        console.error("Error toggling like:", err);
+        return NextResponse.json(
+            { error: "Failed to save or unsave listing" },
+            { status: 500 }
+        );
     }
 }
-
-seedDatabase()
