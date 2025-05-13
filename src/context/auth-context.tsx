@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         await completeLogin(firebaseUser)
+
       } catch (err) {
         console.error('Auth error:', err)
       } finally {
@@ -93,6 +94,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
 
   const completeLogin = async (firebaseUser: FirebaseUser) => {
+    let newUser = false;
+
     try {
       setUser(firebaseUser)
 
@@ -115,12 +118,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             displayName: firebaseUser.displayName,
             email: firebaseUser.email,
           })
+          newUser = true
           setUserProfile(profile)
         }
         else{
           setUserProfile(profile)
         }
       }
+
+      return newUser
 
 
     } catch (err) {
@@ -150,8 +156,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return
       }
 
-      await completeLogin(firebaseUser)
-      router.push('/')
+      const newUser = await completeLogin(firebaseUser)
+      console.log({newUser})
+      if(newUser){
+        router.push("/?newUser=true")
+      }
+      else{
+        router.push('/')
+      }
+
     } catch (error) {
       console.error("Error signing in with Google", error)
     }
