@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    experimental: {
+        authInterrupts: true
+    },
     allowedDevOrigins: '*',
     images: {
         remotePatterns: [
