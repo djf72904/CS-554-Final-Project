@@ -42,4 +42,7 @@ npm run seed
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. To be safe make sure to check the console for the link to the server in case there is already a process running on port:3000  
 ***
 **IMPORTANT FOR TESTING**  
-When testing this website, make sure to have two users with a Stevens account available. This is because only valid .edu emails are allowed to make accounts. Therefore, if interactions between users want to be seen to the true potential, it would be best to be done in this way.
+- When testing this website, make sure to have two users with a Stevens account available. This is because only valid .edu emails are allowed to make accounts. Therefore, if interactions between users want to be seen to the true potential, it would be best to be done in this way.
+- The site MUST be opened using localhost, not 127.0.0.1
+- When enabling two factor authentication, do not dismiss the dialog with the qr code in it. This will cause the user to be locked out. 
+  - Fix: If this happens, go to mongo users collections and set totpSecret to "" and mfaEnabled to false

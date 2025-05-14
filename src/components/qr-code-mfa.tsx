@@ -35,8 +35,6 @@ export default function QRCodeDialog({ qrCode, secret, uid, onVerified }: Readon
 
     const handleVerify = async () => {
         setIsVerifying(true)
-
-        console.log(await user?.getIdToken())
         try {
             const res = await fetch('/api/mfa/verify', {
                 method: 'POST',
@@ -44,15 +42,20 @@ export default function QRCodeDialog({ qrCode, secret, uid, onVerified }: Readon
                     'Content-Type': 'application/json',
                     "Authorization": `Bearer ${await user?.getIdToken()}`
                 },
-                body: JSON.stringify({ uid, token: code }),
+                body: JSON.stringify({ token: code }),
             })
 
             const status = (await res.json()).success
 
-
-
             if (status) {
                 toast({ title: 'MFA Verified', description: 'Two-factor authentication is now enabled.' })
+                await fetch('/api/mfa/set-true', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "Authorization": `Bearer ${await user?.getIdToken()}`
+                    },
+                })
                 setOpen(false)
                 onVerified?.()
             } else {

@@ -33,7 +33,6 @@ export async function POST(req: Request) {
             {
                 $set: {
                     totpSecret: encrypted,
-                    mfaEnabled: true,
                 },
             }
         );
