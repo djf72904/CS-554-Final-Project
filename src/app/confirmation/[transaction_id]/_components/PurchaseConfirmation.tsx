@@ -70,7 +70,7 @@ export default function PurchaseConfirmation({transaction, seller}: Readonly<{ t
                     <Card>
                         <CardHeader>
                             <CardTitle>Purchase Summary</CardTitle>
-                            <CardDescription>Transaction ID: {transaction.id}</CardDescription>
+                            <CardDescription>Transaction ID: {transaction._id}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-4">
