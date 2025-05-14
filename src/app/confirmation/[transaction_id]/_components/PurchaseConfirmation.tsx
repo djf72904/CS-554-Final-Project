@@ -105,14 +105,6 @@ export default function PurchaseConfirmation({transaction, seller}: Readonly<{ t
                         : `$${transaction.listingId.price}`}
                   </span>
                                 </div>
-
-                                {transaction.paymentMethod !== "credit" && (
-                                    <div className="flex justify-between text-sm">
-                                        <span>Service fee</span>
-                                        <span>${transaction.fee}</span>
-                                    </div>
-                                )}
-
                                 <Separator className="my-2" />
 
                                 <div className="flex justify-between font-medium">
@@ -120,7 +112,7 @@ export default function PurchaseConfirmation({transaction, seller}: Readonly<{ t
                                     <span>
                     {transaction.paymentMethod === "credit"
                         ? `${transaction.credits} credits`
-                        : `$${Number(transaction.listingId.price) + transaction.fee}`}
+                        : `$${Number(transaction.listingId.price)}`}
                   </span>
                                 </div>
                             </div>
@@ -184,8 +176,6 @@ export default function PurchaseConfirmation({transaction, seller}: Readonly<{ t
                                 </div>
                             </CardContent>
                         </Card>
-
-
 
 
                         <div className="text-center">

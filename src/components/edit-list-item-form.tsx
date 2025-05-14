@@ -106,13 +106,16 @@ export default function EditListItemForm({
 
   const handleDelete = async () => {
 
-    await fetch(`/api/listings/${data._id}`, {
+    const res = await fetch(`/api/listings/${data._id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${await user?.getIdToken()}`
       }
     });
+    if(res.ok){
+      router.push("/profile")
+    }
   }
 
   return (

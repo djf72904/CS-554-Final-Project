@@ -49,7 +49,7 @@ interface PurchaseOptionsProps {
 
 export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseOptionsProps>) {
     const router = useRouter()
-    const { user, userProfile } = useAuth()
+    const { user, userProfile, school } = useAuth()
     const [isLoading, setIsLoading] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [isProcessing, setIsProcessing] = useState(false)
@@ -66,18 +66,25 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
 
 
     const handleCardInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
+        let { name, value } = e.target
+
+        if (name === "cardNumber") {
+            // Remove all non-digit characters
+            value = value.replace(/\D/g, "")
+            // Add space every 4 digits
+            value = value.replace(/(.{4})/g, "$1 ").trim()
+        }
+
+        if (name === "expiryDate") {
+            // Remove all non-digit characters
+            value = value.replace(/\D/g, "")
+            // Insert "/" after 2 digits
+            if (value.length >= 3) {
+                value = `${value.slice(0, 2)}/${value.slice(2, 4)}`
+            }
+        }
+
         setCardForm((prev) => ({ ...prev, [name]: value }))
-    }
-
-    const isVisaCard = () => {
-        const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
-        return cardNumber.startsWith("4") && cardNumber.length === 16
-    }
-
-    const isMasterCard = () => {
-        const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
-        return cardNumber.startsWith("5") && cardNumber.length === 16
     }
 
     const isAmexCard = () => {
@@ -87,20 +94,30 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
 
     const validateCardInfo = () => {
         const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
-        const expiryDate = cardForm.expiryDate.split("/").map(Number)
+        const [expMonth, expYear] = cardForm.expiryDate.split("/").map(Number)
         const currentDate = new Date()
         const currentMonth = currentDate.getMonth() + 1
         const currentYear = currentDate.getFullYear() % 100
 
-        if (cardNumber.length < 16 || !/^\d+$/.test(cardNumber)) {
+        if (cardNumber.length < 15 || !/^\d+$/.test(cardNumber)) {
             return false
         }
 
-        if (expiryDate[0] < currentMonth || (expiryDate[0] === currentMonth && expiryDate[1] < currentYear)) {
+        if (
+            isNaN(expMonth) || isNaN(expYear) ||
+            expMonth < 1 || expMonth > 12 ||
+            expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)
+        ) {
             return false
         }
 
-        if (cardForm.cvv.length < 3 || !/^\d+$/.test(cardForm.cvv)) {
+        const isAmex = isAmexCard()
+        const expectedCVVLength = isAmex ? 4 : 3
+
+        if (
+            cardForm.cvv.length !== expectedCVVLength ||
+            !/^\d+$/.test(cardForm.cvv)
+        ) {
             return false
         }
 
@@ -241,7 +258,7 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                                   {
                                       pm.map(paymentMethods=>{
                                             return (
-                                                <div  key={paymentMethods.id} className={'flex space-x-2 w-full items-center'}>
+                                                <div key={paymentMethods.id} className={'flex space-x-2 w-full items-center'}>
                                                 <div
                                                     onClick={()=>{
                                                         setUserPaymentMethod(paymentMethods)
@@ -289,6 +306,9 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                                               value={cardForm.cardNumber}
                                               onChange={handleCardInputChange}
                                               maxLength={19}
+                                              inputMode="numeric"
+                                              pattern="\d{4}\s?\d{4}\s?\d{4}\s?\d{1,4}"
+                                              autoComplete="cc-number"
                                           />
                                       </div>
 
@@ -300,6 +320,8 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                                               placeholder="John Doe"
                                               value={cardForm.cardName}
                                               onChange={handleCardInputChange}
+                                              pattern="^[a-zA-Z\s]+$"
+                                              autoComplete="cc-name"
                                           />
                                       </div>
 
@@ -313,6 +335,9 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                                                   value={cardForm.expiryDate}
                                                   onChange={handleCardInputChange}
                                                   maxLength={5}
+                                                  inputMode="numeric"
+                                                  pattern="(0[1-9]|1[0-2])\/\d{2}"
+                                                  autoComplete="cc-exp"
                                               />
                                           </div>
 
@@ -325,6 +350,9 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                                                   value={cardForm.cvv}
                                                   onChange={handleCardInputChange}
                                                   maxLength={4}
+                                                  inputMode="numeric"
+                                                  pattern="\d{3,4}"
+                                                  autoComplete="cc-csc"
                                                   type="password"
                                               />
                                           </div>
@@ -471,7 +499,7 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
           </div>
         <div className="flex items-baseline justify-between mt-4">
           <div className="text-2xl font-bold">${item.price}</div>
-            {userProfile?.school === item.school ?
+            {school === item.school ?
                 (<div className="text-gray-600">or {item.credits} credits</div>)
                 : null
             }

@@ -16,7 +16,7 @@ export async function createTransaction(
   try {
     const newTransaction = new Transaction({
       ...data,
-      status: "pending",
+      status: "complete",
     })
 
     await newTransaction.save()

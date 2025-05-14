@@ -76,42 +76,60 @@ export const ProfileEdit = ({payment_methods, oldDisplayName}: {
         setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
-    const handleCardInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        setCardForm((prev) => ({ ...prev, [name]: value }))
-    }
-
-    const isVisaCard = () => {
-        const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
-        return cardNumber.startsWith("4") && cardNumber.length === 16
-    }
-
-    const isMasterCard = () => {
-        const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
-        return cardNumber.startsWith("5") && cardNumber.length === 16
-    }
 
     const isAmexCard = () => {
         const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
         return cardNumber.startsWith("3") && (cardNumber.length === 15 || cardNumber.length === 16)
     }
 
+    const handleCardInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let { name, value } = e.target
+
+        if (name === "cardNumber") {
+            // Remove all non-digit characters
+            value = value.replace(/\D/g, "")
+            // Add space every 4 digits
+            value = value.replace(/(.{4})/g, "$1 ").trim()
+        }
+
+        if (name === "expiryDate") {
+            // Remove all non-digit characters
+            value = value.replace(/\D/g, "")
+            // Insert "/" after 2 digits
+            if (value.length >= 3) {
+                value = `${value.slice(0, 2)}/${value.slice(2, 4)}`
+            }
+        }
+
+        setCardForm((prev) => ({ ...prev, [name]: value }))
+    }
+
     const validateCardInfo = () => {
         const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
-        const expiryDate = cardForm.expiryDate.split("/").map(Number)
+        const [expMonth, expYear] = cardForm.expiryDate.split("/").map(Number)
         const currentDate = new Date()
         const currentMonth = currentDate.getMonth() + 1
         const currentYear = currentDate.getFullYear() % 100
 
-        if (cardNumber.length < 16 || !/^\d+$/.test(cardNumber)) {
+        if (cardNumber.length < 15 || !/^\d+$/.test(cardNumber)) {
             return false
         }
 
-        if (expiryDate[0] < currentMonth || (expiryDate[0] === currentMonth && expiryDate[1] < currentYear)) {
+        if (
+            isNaN(expMonth) || isNaN(expYear) ||
+            expMonth < 1 || expMonth > 12 ||
+            expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)
+        ) {
             return false
         }
 
-        if (cardForm.cvv.length < 3 || !/^\d+$/.test(cardForm.cvv)) {
+        const isAmex = isAmexCard()
+        const expectedCVVLength = isAmex ? 4 : 3
+
+        if (
+            cardForm.cvv.length !== expectedCVVLength ||
+            !/^\d+$/.test(cardForm.cvv)
+        ) {
             return false
         }
 

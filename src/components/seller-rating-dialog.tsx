@@ -100,7 +100,7 @@ export function SellerRatingDialog({
     }
 
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={onOpenChange} >
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>Rate Your Experience</DialogTitle>
@@ -157,9 +157,6 @@ export function SellerRatingDialog({
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
-                        Cancel
-                    </Button>
                     <Button onClick={handleSubmit} disabled={isSubmitting || rating === 0 || !review}>
                         {isSubmitting ? "Submitting..." : "Submit Review"}
                     </Button>
