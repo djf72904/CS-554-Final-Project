@@ -3,6 +3,7 @@
 import dbConnect from "./mongoose"
 import User, { type MongoUserType } from "@/models/User"
 import CryptoJS from 'crypto-es'
+import searchColleges from "@/lib/college";
 
 export type UserProfile = Omit<MongoUserType, "_id" | "__v">
 
@@ -12,10 +13,6 @@ function encryptSecret(secret: string): string {
   return CryptoJS.AES.encrypt(secret, MFA_SECRET_KEY).toString()
 }
 
-function decryptSecret(cipher: string): string {
-  const bytes = CryptoJS.AES.decrypt(cipher, MFA_SECRET_KEY)
-  return bytes.toString(CryptoJS.enc.Utf8)
-}
 
 export async function createUserProfile(user: any): Promise<any> {
   await dbConnect()

@@ -42,6 +42,7 @@ interface PurchaseOptionsProps {
       category: string
       createdAt: string
       school: string
+      status: string
   }
   seller: any
     pm: MongoPaymentMethodsType[]
@@ -91,6 +92,8 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
         const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
         return cardNumber.startsWith("3") && (cardNumber.length === 15 || cardNumber.length === 16)
     }
+
+    console.log(userProfile)
 
     const validateCardInfo = () => {
         const cardNumber = cardForm.cardNumber.replace(/\s+/g, "")
@@ -527,7 +530,7 @@ export default function PurchaseOptions({ item, pm, seller }: Readonly<PurchaseO
                 This is your listing
               </Button>
           ) : (
-                <Button className="w-full" size="lg" onClick={() => setIsDialogOpen(true)} disabled={isLoading || user == null}>
+                <Button className="w-full" size="lg" onClick={() => setIsDialogOpen(true)} disabled={isLoading || user == null || item.status === 'complete'}>
                   Purchase
                 </Button>
           )}
