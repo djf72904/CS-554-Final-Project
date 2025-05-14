@@ -17,18 +17,18 @@ function encryptSecret(secret: string): string {
 export async function createUserProfile(user: any): Promise<any> {
   await dbConnect()
 
+  const domain = user.email.split('@')[1]
+  const college = await searchColleges.byDomain(domain)
+
   let userProfile = await User.findOne({ email: user.email })
   if(userProfile) return userProfile
 
   if (!userProfile) {
-    const domain = user.email?.split("@")[1] || ""
-    const school = domain.replace('.edu', '');
-
     const newUser = new User({
       uid: user.uid,
       displayName: user.displayName,
       email: user.email,
-      school: school,
+      school: college[0].name,
       credits: 1000,
       rating: 0,
       balance: 1000,
