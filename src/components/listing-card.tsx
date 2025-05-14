@@ -1,3 +1,5 @@
+'use client'
+
 import Link from "next/link"
 import Image from "next/image"
 import { GraduationCap, Heart } from "lucide-react"
@@ -20,8 +22,10 @@ interface ListingCardProps {
   }
 }
 
-export default function ListingCard({ listing }: ListingCardProps) {
-  const { userProfile } = useAuth()
+export default function ListingCard({ listing }: Readonly<ListingCardProps>) {
+  const { school } = useAuth()
+
+  console.log(school)
 
   return (
     <Link href={listing.status === "complete" ? `/confirmation/${listing.transactionId}` : `/items/${listing._id}`} className="group bg-gray-100 rounded-xl shadow-sm hover:shadow-xl transition-shadow duration-300">
@@ -52,7 +56,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
         <p className="font-semibold mt-1">
           ${listing.price}{" "}
           {
-            userProfile?.school === listing.school ? (
+            school === listing.school ? (
               listing.credits && <span className="text-sm font-normal">or {listing.credits} credits</span>
             ) : null
           }
